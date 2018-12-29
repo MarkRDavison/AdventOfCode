@@ -31,15 +31,15 @@
 int main(int _argc, char **_argv) {
 
 	{	// Register Puzzles
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day01Puzzle>(1);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day02Puzzle>(2);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day03Puzzle>(3);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day04Puzzle>(4);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day05Puzzle>(5);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day06Puzzle>(6);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day07Puzzle>(7);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day08Puzzle>(8);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day09Puzzle>(9);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day01Puzzle>( 1);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day02Puzzle>( 2);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day03Puzzle>( 3);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day04Puzzle>( 4);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day05Puzzle>( 5);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day06Puzzle>( 6);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day07Puzzle>( 7);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day08Puzzle>( 8);
+		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day09Puzzle>( 9);
 		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day10Puzzle>(10);
 		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day11Puzzle>(11);
 		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day12Puzzle>(12);
@@ -59,7 +59,6 @@ int main(int _argc, char **_argv) {
 	}
 
 	core::IPuzzleBase *puzzle = core::PuzzleConstructor::createPuzzle(core::InitialisationInfo::parseArguments(_argc, _argv));
-	puzzle->setVerbose(true);
 
 	if (puzzle == nullptr) {
 		return EXIT_FAILURE;

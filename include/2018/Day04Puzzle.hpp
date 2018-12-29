@@ -5,6 +5,9 @@
 
 namespace TwentyEighteen {
 
+	using GuardId = int;
+	using Minute = int;
+
 	class Day04Puzzle : public core::PuzzleBase {
 	public:
 		Day04Puzzle();

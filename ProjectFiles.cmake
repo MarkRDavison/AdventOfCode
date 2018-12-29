@@ -42,9 +42,22 @@ SET(2018_PUZZLES_HEADER_FILES ${2018_PUZZLES_HEADER_FILES}
 	${CMAKE_SOURCE_DIR}/include/2018/Day21Puzzle.hpp
 	${CMAKE_SOURCE_DIR}/include/2018/Day22Puzzle.hpp
 	${CMAKE_SOURCE_DIR}/include/2018/Day23Puzzle.hpp
-	${CMAKE_SOURCE_DIR}/include/2018/Nanobot.hpp
 	${CMAKE_SOURCE_DIR}/include/2018/Day24Puzzle.hpp
 	${CMAKE_SOURCE_DIR}/include/2018/Day25Puzzle.hpp
+	
+	${CMAKE_SOURCE_DIR}/include/2018/Cart.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/Cave.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/Entity.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/Gaurd.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/Marble.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/MetadataNode.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/Nanobot.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/Note.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/ParsedClayVein.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/Pot.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/RegisterInstruction.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/RegisterMachine.hpp
+	${CMAKE_SOURCE_DIR}/include/2018/TrainingRegisterInstruction.hpp
 ) 
 SET(2018_PUZZLES_SOURCE_FILES ${2018_PUZZLES_SOURCE_FILES}
 	${CMAKE_SOURCE_DIR}/src/2018/Day01Puzzle.cpp
@@ -72,6 +85,9 @@ SET(2018_PUZZLES_SOURCE_FILES ${2018_PUZZLES_SOURCE_FILES}
 	${CMAKE_SOURCE_DIR}/src/2018/Day23Puzzle.cpp
 	${CMAKE_SOURCE_DIR}/src/2018/Day24Puzzle.cpp
 	${CMAKE_SOURCE_DIR}/src/2018/Day25Puzzle.cpp
+
+	${CMAKE_SOURCE_DIR}/src/2018/Cave.cpp
+	${CMAKE_SOURCE_DIR}/src/2018/RegisterMachine.cpp
 ) 
 SET(2018_PUZZLES_TEST_SOURCE_FILES ${2018_PUZZLES_TEST_SOURCE_FILES}
 	${CMAKE_SOURCE_DIR}/test/2018/Day01PuzzleTests.cpp

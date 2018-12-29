@@ -5,9 +5,13 @@
 
 namespace TwentyEighteen {
 
+	struct Cell {
+		char owningCell{'?'};
+	};
+
 	class Day06Puzzle : public core::PuzzleBase {
 	public:
-		Day06Puzzle();
+		Day06Puzzle(int _threshold = 10000);
 		~Day06Puzzle() override;
 
 		void initialise(const core::InitialisationInfo& _initialisationInfo) override;
@@ -15,6 +19,7 @@ namespace TwentyEighteen {
 		std::pair<std::string, std::string> fastSolve() override;
 
 	private:
+		int m_Threshold;
 		std::vector<std::string> m_InputLines;
 	};
 

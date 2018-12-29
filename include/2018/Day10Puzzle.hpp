@@ -2,8 +2,21 @@
 #define INCLUDED_ADVENT_OF_CODE_2018_DAY_10_PUZZLE_HPP_
 
 #include <Core/PuzzleBase.hpp>
+#include <SFML/System/Vector2.hpp>
 
 namespace TwentyEighteen {
+
+	struct Particle {
+
+		Particle(int _posx, int _posy, int _velx, int _vely) :
+			position(_posx, _posy), 
+			velocity(_velx, _vely) {
+			
+		}
+
+		sf::Vector2i position;
+		sf::Vector2i velocity;
+	};
 
 	class Day10Puzzle : public core::PuzzleBase {
 	public:

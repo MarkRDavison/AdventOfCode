@@ -7,7 +7,7 @@ namespace TwentyEighteen {
 
 	class Day15Puzzle : public core::PuzzleBase {
 	public:
-		Day15Puzzle();
+		Day15Puzzle(bool _solvePart2 = true);
 		~Day15Puzzle() override;
 
 		void initialise(const core::InitialisationInfo& _initialisationInfo) override;
@@ -15,6 +15,7 @@ namespace TwentyEighteen {
 		std::pair<std::string, std::string> fastSolve() override;
 
 	private:
+		bool m_SolvePart2;
 		std::vector<std::string> m_InputLines;
 	};
 

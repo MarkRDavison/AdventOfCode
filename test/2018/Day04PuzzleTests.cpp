@@ -2,8 +2,8 @@
 #include <2018/Day04Puzzle.hpp>
 
 namespace TwentyEighteen {
-	
-	TEST_CASE("Day 4 Part 1 Example works", "[2018][Day4]") {
+
+	TEST_CASE("Day 4 Part 1 and 2 Example works", "[2018][Day4]") {
 		const std::vector<std::string> input = {
 			"[1518-11-01 00:00] Guard #10 begins shift",
 			"[1518-11-01 00:05] falls asleep",
@@ -31,6 +31,7 @@ namespace TwentyEighteen {
 		auto answers = puzzle.fastSolve();
 
 		REQUIRE("240" == answers.first);
+		REQUIRE("4455" == answers.second);
 	}
 
 }

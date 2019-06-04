@@ -120,4 +120,11 @@ namespace TwentyEighteen {
 		}
 	}
 
+	RegisterValue& RegisterMachine::getProgramCounter() {
+		return m_ProgramCounter;
+	}
+	const RegisterValue& RegisterMachine::getProgramCounter() const {
+		return m_ProgramCounter;
+	}
+
 }

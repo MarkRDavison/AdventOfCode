@@ -24,6 +24,9 @@ namespace TwentyEighteen {
 
 		void runProgramForXIterations(std::size_t _iterations);
 
+		RegisterValue& getProgramCounter();
+		const RegisterValue& getProgramCounter() const;
+
 	private:
 		std::vector<RegisterValue> m_Registers;
 		RegisterValue& m_ProgramCounter;

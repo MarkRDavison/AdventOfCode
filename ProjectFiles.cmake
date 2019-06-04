@@ -17,6 +17,89 @@ SET(CORE_TEST_SOURCE_FILES ${CORE_TEST_SOURCE_FILES}
 	${CMAKE_SOURCE_DIR}/test/Core/RegionTests.cpp
 )
 
+# 2016 Puzzles
+SET(2016_PUZZLES_HEADER_FILES ${2016_PUZZLES_HEADER_FILES}
+	${CMAKE_SOURCE_DIR}/include/2016/Day01Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day02Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day03Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day04Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day05Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day06Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day07Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day08Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day09Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day10Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day11Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day12Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day13Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day14Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day15Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day16Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day17Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day18Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day19Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day20Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day21Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day22Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day23Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day24Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2016/Day25Puzzle.hpp
+) 
+SET(2016_PUZZLES_SOURCE_FILES ${2016_PUZZLES_SOURCE_FILES}
+	${CMAKE_SOURCE_DIR}/src/2016/Day01Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day02Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day03Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day04Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day05Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day06Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day07Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day08Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day09Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day10Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day11Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day12Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day13Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day14Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day15Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day16Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day17Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day18Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day19Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day20Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day21Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day22Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day23Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day24Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2016/Day25Puzzle.cpp
+) 
+SET(2016_PUZZLES_TEST_SOURCE_FILES ${2016_PUZZLES_TEST_SOURCE_FILES}
+	${CMAKE_SOURCE_DIR}/test/2016/Day01PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day02PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day03PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day04PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day05PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day06PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day07PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day08PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day09PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day10PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day11PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day12PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day13PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day14PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day15PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day16PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day17PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day18PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day19PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day20PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day21PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day22PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day23PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day24PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2016/Day25PuzzleTests.cpp
+)
+
 # 2018 Puzzles
 SET(2018_PUZZLES_HEADER_FILES ${2018_PUZZLES_HEADER_FILES}
 	${CMAKE_SOURCE_DIR}/include/2018/Day01Puzzle.hpp

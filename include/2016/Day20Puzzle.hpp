@@ -1,20 +1,10 @@
-#ifndef INCLUDED_ADVENT_OF_CODE_2018_DAY_20_PUZZLE_HPP_
-#define INCLUDED_ADVENT_OF_CODE_2018_DAY_20_PUZZLE_HPP_
+#ifndef INCLUDED_ADVENT_OF_CODE_2016_DAY_20_PUZZLE_HPP_
+#define INCLUDED_ADVENT_OF_CODE_2016_DAY_20_PUZZLE_HPP_
 
 #include <Core/PuzzleBase.hpp>
 
-namespace TwentyEighteen {
-
-	struct DistanceCoord {
-
-		DistanceCoord(int _d = 0, int _x = 0, int _y = 0) : d(_d), x(_x), y(_y) {}
-
-		int d;
-		int x;
-		int y;
-
-	};
-
+namespace TwentySixteen {
+	
 	class Day20Puzzle : public core::PuzzleBase {
 	public:
 		Day20Puzzle();
@@ -30,4 +20,4 @@ namespace TwentyEighteen {
 
 }
 
-#endif // INCLUDED_ADVENT_OF_CODE_2018_DAY_20_PUZZLE_HPP_
+#endif // INCLUDED_ADVENT_OF_CODE_2016_DAY_20_PUZZLE_HPP_

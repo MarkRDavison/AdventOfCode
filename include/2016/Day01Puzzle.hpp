@@ -7,6 +7,10 @@ namespace TwentySixteen {
 	
 	class Day01Puzzle : public core::PuzzleBase {
 	public:
+		const char Left = 'L';
+		const char Right = 'R';
+
+
 		Day01Puzzle();
 		~Day01Puzzle() override;
 

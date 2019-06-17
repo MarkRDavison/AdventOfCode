@@ -40,8 +40,8 @@ namespace TwentySixteen {
 			auto direction = core::OrientationHelper::toDirection(orientation);
 
 			for (int i = 0; i < offset; ++i) {
-				coordinates.x += 1 * direction.x;
-				coordinates.y += 1 * direction.y;
+				coordinates.x += direction.x;
+				coordinates.y += direction.y;
 
 				if (part2.empty() && visitedCoords.count(coordinates) > 0) {
 					part2 = std::to_string(std::abs(coordinates.x) + std::abs(coordinates.y));

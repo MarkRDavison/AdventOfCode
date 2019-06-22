@@ -1,10 +1,12 @@
 #include <2016/Day06Puzzle.hpp>
 #include <Core/StringExtensions.hpp>
+#include <unordered_map>
+#include <algorithm>
 
 namespace TwentySixteen {
 	
 	Day06Puzzle::Day06Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2016, 6) {
+		core::PuzzleBase("Signals and Noise", 2016, 6) {
 
 	}
 	Day06Puzzle::~Day06Puzzle() {
@@ -21,6 +23,35 @@ namespace TwentySixteen {
 	}
 
 	std::pair<std::string, std::string> Day06Puzzle::fastSolve() {
-		return { "Part 1", "Part 2" };
+
+		std::string part1;
+		std::string part2;
+		const unsigned size = m_InputLines[0].size();
+
+		std::vector<std::unordered_map<char, int>> occurences(size);
+
+		for (const std::string& _line : m_InputLines) {
+			for (unsigned i = 0; i < size; ++i) {
+				occurences[i][_line[i]] += 1;
+			}
+		}
+
+		for (unsigned i = 0; i < size; ++i) {
+			const auto& max = std::max_element(occurences[i].begin(), occurences[i].end(), 
+				[&](const auto & _lhs, const auto & _rhs) -> int {
+					return _lhs.second < _rhs.second;
+				}
+			);
+			const auto& min = std::min_element(occurences[i].begin(), occurences[i].end(), 
+				[&](const auto & _lhs, const auto & _rhs) -> int {
+					return _lhs.second < _rhs.second;
+				}
+			);
+
+			part1 += max->first;
+			part2 += min->first;
+		}		
+
+		return { part1, part2 };
 	}
 }

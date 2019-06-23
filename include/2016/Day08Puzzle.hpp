@@ -14,8 +14,17 @@ namespace TwentySixteen {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		void setCustomScreenSize(unsigned _width, unsigned _height) {
+			m_Width = _width;
+			m_Height = _height;
+		}
+
+	private:
+
 	private:
 		std::vector<std::string> m_InputLines;
+		unsigned m_Width{ 50 };
+		unsigned m_Height{ 6 };
 	};
 
 }

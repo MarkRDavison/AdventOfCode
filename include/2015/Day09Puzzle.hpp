@@ -1,9 +1,9 @@
-#ifndef INCLUDED_ADVENT_OF_CODE_2016_DAY_09_PUZZLE_HPP_
-#define INCLUDED_ADVENT_OF_CODE_2016_DAY_09_PUZZLE_HPP_
+#ifndef INCLUDED_ADVENT_OF_CODE_2015_DAY_09_PUZZLE_HPP_
+#define INCLUDED_ADVENT_OF_CODE_2015_DAY_09_PUZZLE_HPP_
 
 #include <Core/PuzzleBase.hpp>
 
-namespace TwentySixteen {
+namespace TwentyFifteen {
 	
 	class Day09Puzzle : public core::PuzzleBase {
 	public:
@@ -13,11 +13,11 @@ namespace TwentySixteen {
 		void initialise(const core::InitialisationInfo& _initialisationInfo) override;
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
-		
+
 	private:
 		std::vector<std::string> m_InputLines;
 	};
 
 }
 
-#endif // INCLUDED_ADVENT_OF_CODE_2016_DAY_09_PUZZLE_HPP_
+#endif // INCLUDED_ADVENT_OF_CODE_2015_DAY_09_PUZZLE_HPP_

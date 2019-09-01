@@ -25,6 +25,12 @@ namespace core {
 		return { _lhs.x + _rhs.x, _lhs.y + _rhs.y };
 	}
 
+	template <typename T>
+	void operator+=(Vector2<T>& _lhs, const Vector2<T>& _rhs) {
+		_lhs.x += _rhs.x;
+		_lhs.y += _rhs.y;
+	}
+
 	struct vector2_hash_fxn {
 		template<typename T>
 		std::size_t operator()(const Vector2<T>& _vec) const {

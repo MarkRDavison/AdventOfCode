@@ -4,23 +4,45 @@
 namespace TwentyFifteen {
 
 	TEST_CASE("Day 1 Part 1 Example work", "[2015][Day01]") {
-	    const std::vector<std::string> input = {};
 
-	    Day01Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
+		const std::vector<std::pair<std::string, std::string>> inputResults = {
+			{ "(())", "0" },
+			{ "()()", "0" },
+			{ "(((", "3" },
+			{ "(()(()(", "3" },
+			{ "))(((((", "3" },
+			{ "())", "-1" },
+			{ "))(", "-1" },
+			{ ")))", "-3" },
+			{ ")())())", "-3" },
+		};
 
-	    auto answers = puzzle.fastSolve();
+		for (const auto& p : inputResults) {
+			Day01Puzzle puzzle{};
+			puzzle.setVerbose(true);
+			puzzle.setInputLines({p.first});
+
+			auto answers = puzzle.fastSolve();
+
+			REQUIRE(p.second == answers.first);
+		}
 	}
 
 	TEST_CASE("Day 1 Part 2 Example work", "[2015][Day01]") {
-	    const std::vector<std::string> input = {};
+		const std::vector<std::pair<std::string, std::string>> inputResults = {
+			{ ")", "1" },
+			{ "()())", "5" },
+		};
 
-	    Day01Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
+		for (const auto& p : inputResults) {
+			Day01Puzzle puzzle{};
+			puzzle.setVerbose(true);
+			puzzle.setInputLines({ p.first });
 
-	    auto answers = puzzle.fastSolve();
+			auto answers = puzzle.fastSolve();
+
+			REQUIRE(p.second == answers.second);
+		}
 	}
 
 }

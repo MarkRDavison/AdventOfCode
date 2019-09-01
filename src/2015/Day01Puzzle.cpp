@@ -4,7 +4,7 @@
 namespace TwentyFifteen {
 	
 	Day01Puzzle::Day01Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2015, 1) {
+		core::PuzzleBase("Not Quite Lisp", 2015, 1) {
 
 	}
 	Day01Puzzle::~Day01Puzzle() {
@@ -21,6 +21,23 @@ namespace TwentyFifteen {
 	}
 
 	std::pair<std::string, std::string> Day01Puzzle::fastSolve() {
-		return { "Part 1", "Part 2" };
+		int floor = 0;
+		int basementPosition = 0;
+		int index = 1;
+		for (const char c : m_InputLines[0]) {
+			if (c == Up) {
+				floor++;
+			} else {
+				floor--;
+			}
+			if (floor < 0 && basementPosition == 0) {
+				basementPosition = index;
+			}
+
+			index++;
+		}
+
+
+		return { std::to_string(floor), std::to_string(basementPosition) };
 	}
 }

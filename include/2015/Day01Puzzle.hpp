@@ -7,6 +7,9 @@ namespace TwentyFifteen {
 	
 	class Day01Puzzle : public core::PuzzleBase {
 	public:
+		static const constexpr char Up = '(';
+		static const constexpr char Down = ')';
+
 		Day01Puzzle();
 		~Day01Puzzle() override;
 

@@ -3,7 +3,7 @@
 
 namespace TwentyFifteen {
 
-	TEST_CASE("Day 4 Part 1 Example work", "[2015][Day04]") {
+	TEST_CASE("Day 4 Part 1 Example work", "[2015][Day04][Slow]") {
 		const std::vector<std::string> input = { "abcdef" };
 
 		Day04Puzzle puzzle{};
@@ -15,7 +15,7 @@ namespace TwentyFifteen {
 		REQUIRE("609043" == answers.first);
 	}
 
-	TEST_CASE("Day 4 Part 1 Example 2 work", "[2015][Day04]") {
+	TEST_CASE("Day 4 Part 1 Example 2 work", "[2015][Day04][Slow]") {
 		const std::vector<std::string> input = { "pqrstuv" };
 
 		Day04Puzzle puzzle{};

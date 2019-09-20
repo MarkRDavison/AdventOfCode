@@ -4,7 +4,7 @@
 namespace TwentyFifteen {
 	
 	Day05Puzzle::Day05Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2015, 5) {
+		core::PuzzleBase("Doesn't He Have Intern-Elves For This?", 2015, 5) {
 
 	}
 	Day05Puzzle::~Day05Puzzle() {
@@ -19,8 +19,67 @@ namespace TwentyFifteen {
 	void Day05Puzzle::setInputLines(const std::vector<std::string>& _inputLines) {
 		m_InputLines = std::vector<std::string>(_inputLines);
 	}
+	
+	bool Day05Puzzle::isNicePart1(const std::string& _string) {
+		// It contains at least three vowels(aeiou only), like aei, xazegov, or aeiouaeiouaeiou.
+		// It contains at least one letter that appears twice in a row, like xx, abcdde(dd), or aabbccdd(aa, bb, cc, or dd).
+		// It does not contain the strings ab, cd, pq, or xy, even if they are part of one of the other requirements.
+
+		unsigned vowelCount = 0;
+		bool doubleCharacter = false;
+
+		for (unsigned i = 0; i < _string.size(); ++i) {
+			if (vowelCount < 3) {
+				if (isVowel(_string[i])) {
+					vowelCount++;
+				}
+			}
+			if (i != _string.size() - 1) {
+				if (!doubleCharacter) {
+					doubleCharacter = _string[i] == _string[i + 1];
+				}
+				if (_string[i] == 'a' && _string[i + 1] == 'b' ||
+					_string[i] == 'c' && _string[i + 1] == 'd' ||
+					_string[i] == 'p' && _string[i + 1] == 'q' ||
+					_string[i] == 'x' && _string[i + 1] == 'y') {
+					return false;
+				}
+			}
+		}
+
+
+		return vowelCount >= 3 && doubleCharacter;
+	}
+
+	bool Day05Puzzle::isNicePart2(const std::string& _string) {
+		// It contains a pair of any two letters that appears at least twice in the string without overlapping, like xyxy(xy) or aabcdefgaa(aa), but not like aaa(aa, but it overlaps).
+		// It contains at least one letter which repeats with exactly one letter between them, like xyx, abcdefeghi(efe), or even aaa.
+
+		for (unsigned i = 0; i < _string.size(); ++i) {
+
+		}
+
+		return false;
+	}
+	bool Day05Puzzle::isVowel(char _c) {
+		return
+			_c == 'a' ||
+			_c == 'e' ||
+			_c == 'i' ||
+			_c == 'o' ||
+			_c == 'u';
+	}
 
 	std::pair<std::string, std::string> Day05Puzzle::fastSolve() {
-		return { "Part 1", "Part 2" };
+
+		unsigned niceLines_1 = 0;
+		unsigned niceLines_2 = 0;
+
+		for (const std::string& _line : m_InputLines) {
+			niceLines_1 += isNicePart1(_line) ? 1 : 0;
+			niceLines_2 += isNicePart2(_line) ? 1 : 0;
+		}
+		
+		return { std::to_string(niceLines_1), std::to_string(niceLines_2) };
 	}
 }

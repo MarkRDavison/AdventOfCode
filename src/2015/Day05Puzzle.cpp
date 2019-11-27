@@ -53,10 +53,32 @@ namespace TwentyFifteen {
 
 	bool Day05Puzzle::isNicePart2(const std::string& _string) {
 		// It contains a pair of any two letters that appears at least twice in the string without overlapping, like xyxy(xy) or aabcdefgaa(aa), but not like aaa(aa, but it overlaps).
+
+		bool valid = false;
+		for (unsigned i = 0; i < _string.size() - 2; ++i) {
+			const char c1 = _string[i];
+			const char c2 = _string[i+1];
+			for (unsigned j = i + 2; j < _string.size(); ++j) {
+				if (c1 == _string[j] &&
+					c2 == _string[j + 1]) {
+					valid = true;
+					break;
+				}
+			}
+			if (valid) {
+				break;
+			}
+		}
+
+		if (!valid) {
+			return false;
+		}
+
 		// It contains at least one letter which repeats with exactly one letter between them, like xyx, abcdefeghi(efe), or even aaa.
-
-		for (unsigned i = 0; i < _string.size(); ++i) {
-
+		for (unsigned i = 0; i <= _string.size() - 3; ++i) {
+			if (_string[i] == _string[i + 2]) {
+				return true;
+			}
 		}
 
 		return false;

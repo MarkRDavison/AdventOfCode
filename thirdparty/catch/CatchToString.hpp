@@ -5,6 +5,7 @@
 #include <catch/catch.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <Core/Vector2.hpp>
 
 
 namespace Catch {
@@ -18,6 +19,20 @@ namespace Catch {
 	template<>
 	struct StringMaker<sf::Vector2i> {
 		static std::string convert(sf::Vector2i const& _value) {
+			return "x: " + std::to_string(_value.x) + ", y: " + std::to_string(_value.y);
+		}
+	};
+
+	template<>
+	struct StringMaker<core::Vector2f> {
+		static std::string convert(core::Vector2f const& _value) {
+			return "x: " + std::to_string(_value.x) + ", y: " + std::to_string(_value.y);
+		}
+	};
+
+	template<>
+	struct StringMaker<core::Vector2i> {
+		static std::string convert(core::Vector2i const& _value) {
 			return "x: " + std::to_string(_value.x) + ", y: " + std::to_string(_value.y);
 		}
 	};

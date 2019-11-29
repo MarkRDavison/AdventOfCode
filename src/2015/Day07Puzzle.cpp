@@ -4,7 +4,7 @@
 namespace TwentyFifteen {
 	
 	Day07Puzzle::Day07Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2015, 7) {
+		core::PuzzleBase("Some Assembly Required", 2015, 7) {
 
 	}
 	Day07Puzzle::~Day07Puzzle() {

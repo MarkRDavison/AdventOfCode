@@ -4,7 +4,7 @@
 namespace TwentyNineteen {
 	
 	Day01Puzzle::Day01Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2019, 1) {
+		core::PuzzleBase("The Tyranny of the Rocket Equation", 2019, 1) {
 
 	}
 	Day01Puzzle::~Day01Puzzle() {

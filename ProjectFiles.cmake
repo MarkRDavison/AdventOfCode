@@ -286,3 +286,87 @@ SET(2018_PUZZLES_TEST_SOURCE_FILES ${2018_PUZZLES_TEST_SOURCE_FILES}
 	${CMAKE_SOURCE_DIR}/test/2018/Day24PuzzleTests.cpp
 	${CMAKE_SOURCE_DIR}/test/2018/Day25PuzzleTests.cpp
 )
+
+
+# 2019 Puzzles
+SET(2019_PUZZLES_HEADER_FILES ${2019_PUZZLES_HEADER_FILES}
+	${CMAKE_SOURCE_DIR}/include/2019/Day01Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day02Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day03Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day04Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day05Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day06Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day07Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day08Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day09Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day10Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day11Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day12Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day13Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day14Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day15Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day16Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day17Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day18Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day19Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day20Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day21Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day22Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day23Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day24Puzzle.hpp
+	${CMAKE_SOURCE_DIR}/include/2019/Day25Puzzle.hpp
+) 
+SET(2019_PUZZLES_SOURCE_FILES ${2019_PUZZLES_SOURCE_FILES}
+	${CMAKE_SOURCE_DIR}/src/2019/Day01Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day02Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day03Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day04Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day05Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day06Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day07Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day08Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day09Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day10Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day11Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day12Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day13Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day14Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day15Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day16Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day17Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day18Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day19Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day20Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day21Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day22Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day23Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day24Puzzle.cpp
+	${CMAKE_SOURCE_DIR}/src/2019/Day25Puzzle.cpp
+) 
+SET(2019_PUZZLES_TEST_SOURCE_FILES ${2019_PUZZLES_TEST_SOURCE_FILES}
+	${CMAKE_SOURCE_DIR}/test/2019/Day01PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day02PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day03PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day04PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day05PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day06PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day07PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day08PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day09PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day10PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day11PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day12PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day13PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day14PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day15PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day16PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day17PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day18PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day19PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day20PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day21PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day22PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day23PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day24PuzzleTests.cpp
+	${CMAKE_SOURCE_DIR}/test/2019/Day25PuzzleTests.cpp
+)

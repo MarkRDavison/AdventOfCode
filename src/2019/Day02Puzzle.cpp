@@ -2,9 +2,9 @@
 #include <Core/StringExtensions.hpp>
 #include <cassert>
 
-#define OPCODE_1 1
-#define OPCODE_2 2
-#define OPCODE_99 99
+#define OPCODE_ADD 1
+#define OPCODE_MUL 2
+#define OPCODE_STOP 99
 
 namespace TwentyNineteen {
 	
@@ -30,12 +30,11 @@ namespace TwentyNineteen {
 
 		std::vector<long> valuesStart;
 		for (const auto& strValue : core::StringExtensions::splitStringByDelimeter(m_InputLines[0], ",")) {
-			valuesStart.emplace_back(std::atoi(strValue.c_str()));
-			
+			valuesStart.emplace_back(std::atoi(strValue.c_str()));			
 		}
 
 		const long target = 19690720;
-		const long guessMax = 100;
+		const long guessMax = 99;
 		const long guessMin = 0;
 		std::string part2;
 
@@ -54,7 +53,7 @@ namespace TwentyNineteen {
 					index++;
 					const auto& opcode = values[counter];
 
-					if (opcode == 99) {
+					if (opcode == OPCODE_STOP) {
 						break;
 					}
 
@@ -62,9 +61,9 @@ namespace TwentyNineteen {
 					const auto& val2 = values[values[counter + 2]];
 					auto& result = values[values[counter + 3]];
 
-					if (opcode == OPCODE_1) {
+					if (opcode == OPCODE_ADD) {
 						result = val1 + val2;
-					} else if (opcode == OPCODE_2) {
+					} else if (opcode == OPCODE_MUL) {
 						result = val1 * val2;
 					}
 
@@ -92,7 +91,7 @@ namespace TwentyNineteen {
 				index++;
 				const auto& opcode = values[counter];
 
-				if (opcode == 99) {
+				if (opcode == OPCODE_STOP) {
 					return { std::to_string(values[0]), part2 };
 				}
 
@@ -100,9 +99,9 @@ namespace TwentyNineteen {
 				const auto& val2 = values[values[counter + 2]];
 				auto& result = values[values[counter + 3]];
 
-				if (opcode == OPCODE_1) {
+				if (opcode == OPCODE_ADD) {
 					result = val1 + val2;
-				} else if (opcode == OPCODE_2) {
+				} else if (opcode == OPCODE_MUL) {
 					result = val1 * val2;
 				}
 

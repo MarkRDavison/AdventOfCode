@@ -6,7 +6,7 @@
 namespace TwentyNineteen {
 	
 	Day03Puzzle::Day03Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2019, 3) {
+		core::PuzzleBase("Crossed Wires", 2019, 3) {
 
 	}
 	Day03Puzzle::~Day03Puzzle() {

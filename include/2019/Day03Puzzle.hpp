@@ -2,8 +2,16 @@
 #define INCLUDED_ADVENT_OF_CODE_2019_DAY_03_PUZZLE_HPP_
 
 #include <Core/PuzzleBase.hpp>
+#include <tuple>
 
 namespace TwentyNineteen {
+
+	struct Day03Cell  {
+		bool first{ false };
+		bool second{ false };
+		int firstCount{ std::numeric_limits<int>::max() };
+		int secondCount{ std::numeric_limits<int>::max() };
+	};
 	
 	class Day03Puzzle : public core::PuzzleBase {
 	public:

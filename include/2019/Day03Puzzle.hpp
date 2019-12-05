@@ -5,14 +5,7 @@
 #include <tuple>
 
 namespace TwentyNineteen {
-
-	struct Day03Cell  {
-		bool first{ false };
-		bool second{ false };
-		int firstCount{ std::numeric_limits<int>::max() };
-		int secondCount{ std::numeric_limits<int>::max() };
-	};
-	
+		
 	class Day03Puzzle : public core::PuzzleBase {
 	public:
 		Day03Puzzle();

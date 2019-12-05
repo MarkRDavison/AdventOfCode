@@ -13,7 +13,7 @@ namespace TwentyNineteen {
 		void initialise(const core::InitialisationInfo& _initialisationInfo) override;
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
-
+		static bool Day04Puzzle::isValid(int _number, bool _part1);
 	private:
 		std::vector<std::string> m_InputLines;
 	};

@@ -4,6 +4,13 @@
 #include <Core/Vector2.hpp>
 
 namespace TwentyNineteen {
+
+	struct Day03Cell {
+		bool first{ false };
+		bool second{ false };
+		int firstCount{ std::numeric_limits<int>::max() };
+		int secondCount{ std::numeric_limits<int>::max() };
+	};
 	
 	Day03Puzzle::Day03Puzzle() :
 		core::PuzzleBase("Crossed Wires", 2019, 3) {
@@ -25,11 +32,14 @@ namespace TwentyNineteen {
 	static core::Vector2i charToDirection(char _c) {
 		if (_c == 'R') {
 			return { 1,0 };
-		}if (_c == 'L') {
+		}
+		if (_c == 'L') {
 			return { -1,0 };
-		}if (_c == 'U') {
+		}
+		if (_c == 'U') {
 			return { 0,1 };
-		}if (_c == 'D') {
+		}
+		if (_c == 'D') {
 			return { 0,-1 };
 		}
 		return {};
@@ -39,7 +49,6 @@ namespace TwentyNineteen {
 
 		core::Region<Day03Cell> region;
 
-		core::Vector2i currentPosition = { 0,0 };
 
 		int closestIntersection = std::numeric_limits<int>::max();
 		int part2 = std::numeric_limits<int>::max();
@@ -47,7 +56,9 @@ namespace TwentyNineteen {
 		region.getCell(0, 0).first = true;
 		region.getCell(0, 0).second = true;
 
+		core::Vector2i currentPosition = { 0,0 };
 		int count = 0;
+
 		for (const auto& part : core::StringExtensions::splitStringByDelimeter(m_InputLines[0], ",")) {
 			const auto& dir = charToDirection(part[0]);
 			const int length = std::atoi(part.substr(1).c_str());
@@ -62,15 +73,17 @@ namespace TwentyNineteen {
 				currentPosition = { x,y };
 			}
 		}
+
 		currentPosition = { 0,0 };
 		count = 0;
+
 		for (const auto& part : core::StringExtensions::splitStringByDelimeter(m_InputLines[1], ",")) {
 			const auto& dir = charToDirection(part[0]);
 			const int length = std::atoi(part.substr(1).c_str());
 
 			for (int i = 0; i < length; ++i) {
 				count++;
-				const int x = currentPosition.x + dir.x;\
+				const int x = currentPosition.x + dir.x;
 				const int y = currentPosition.y + dir.y;
 				auto& cell = region.getCell(x, y);
 				cell.second = true;

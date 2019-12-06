@@ -1,6 +1,8 @@
 #ifndef INCLUDED_ADVENT_OF_CODE_CORE_VECTOR_2_HPP_
 #define INCLUDED_ADVENT_OF_CODE_CORE_VECTOR_2_HPP_
 
+#include <cstdlib>
+
 namespace core {
 
 	template <typename T>
@@ -18,6 +20,16 @@ namespace core {
 	template <typename T>
 	bool operator==(const Vector2<T>& _lhs, const Vector2<T>& _rhs) {
 		return _lhs.x == _rhs.x && _lhs.y == _rhs.y;
+	}
+
+	template <typename T>
+	bool operator!=(const Vector2<T>& _lhs, const Vector2<T>& _rhs) {
+		return !(_lhs == _rhs);
+	}
+
+	template <typename T>
+	bool operator<(const Vector2<T>& _lhs, const Vector2<T>& _rhs) {
+		return _lhs.y < _rhs.y && _lhs.x < _rhs.x;
 	}
 
 	template <typename T>

@@ -4,6 +4,7 @@ SET(CORE_HEADER_FILES ${CORE_HEADER_FILES}
 	${CMAKE_SOURCE_DIR}/include/Core/IPuzzleBase.hpp
 	${CMAKE_SOURCE_DIR}/include/Core/MD5.hpp
 	${CMAKE_SOURCE_DIR}/include/Core/Orientation.hpp
+	${CMAKE_SOURCE_DIR}/include/Core/Pathfinding.hpp
 	${CMAKE_SOURCE_DIR}/include/Core/PuzzleBase.hpp
 	${CMAKE_SOURCE_DIR}/include/Core/PuzzleConstructor.hpp	
 	${CMAKE_SOURCE_DIR}/include/Core/Region.hpp	
@@ -12,12 +13,14 @@ SET(CORE_HEADER_FILES ${CORE_HEADER_FILES}
 )
 SET(CORE_SOURCE_FILES ${CORE_SOURCE_FILES}
 	${CMAKE_SOURCE_DIR}/src/Core/MD5.cpp
+	${CMAKE_SOURCE_DIR}/src/Core/Pathfinding.cpp
 	${CMAKE_SOURCE_DIR}/src/Core/PuzzleBase.cpp
 	${CMAKE_SOURCE_DIR}/src/Core/PuzzleConstructor.cpp	
 	${CMAKE_SOURCE_DIR}/src/Core/PuzzleConstructor.cpp	
 	${CMAKE_SOURCE_DIR}/src/Core/StringExtensions.cpp	
 )
 SET(CORE_TEST_SOURCE_FILES ${CORE_TEST_SOURCE_FILES}
+	${CMAKE_SOURCE_DIR}/test/Core/PathfindingTests.cpp
 	${CMAKE_SOURCE_DIR}/test/Core/RegionTests.cpp
 )
 

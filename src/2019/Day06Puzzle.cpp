@@ -39,8 +39,6 @@ namespace TwentyNineteen {
 		std::unordered_map<std::string, std::unordered_set<std::string>> orbits;
 		std::unordered_map<std::string, unsigned> memoizedOrbits;
 		std::unordered_map<std::string, std::string> whoDoIOrbit;
-		std::unordered_set<std::string> allBodies;
-		allBodies.insert("COM");
 		memoizedOrbits["COM"] = 0;
 
 		for (const auto& str : m_InputLines) {
@@ -49,7 +47,6 @@ namespace TwentyNineteen {
 			const auto& orbiter = pair[1];
 
 			orbits[orbitee].insert(orbiter);
-			allBodies.insert(orbiter);
 		}
 
 		const std::string you = "YOU";

@@ -3,24 +3,17 @@
 
 namespace TwentyFifteen {
 
-	TEST_CASE("Day 8 Part 1 Example work", "[2015][Day08]") {
-	    const std::vector<std::string> input = {};
-
-	    Day08Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+	TEST_CASE("Day 8 get info works for different escape characters") {
+		auto info = Day08Puzzle::getInfo("\"kexh\\\"pmi\"");
+		REQUIRE(11 == info.characterSize);
+		REQUIRE(8 == info.memorySize);
 	}
-
-	TEST_CASE("Day 8 Part 2 Example work", "[2015][Day08]") {
-	    const std::vector<std::string> input = {};
-
-	    Day08Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+	
+	TEST_CASE("Day 8 encoding works", "[2015][Day08]") {
+		REQUIRE(6 == Day08Puzzle::encodeSize("\"\""));
+		REQUIRE(9 == Day08Puzzle::encodeSize("\"abc\""));
+		REQUIRE(16 == Day08Puzzle::encodeSize("\"aaa\\\"aaa\""));
+		REQUIRE(11 == Day08Puzzle::encodeSize("\"\\x27\""));
 	}
 
 }

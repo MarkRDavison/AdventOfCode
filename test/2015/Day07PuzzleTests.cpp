@@ -4,7 +4,16 @@
 namespace TwentyFifteen {
 
 	TEST_CASE("Day 7 Part 1 Example work", "[2015][Day07]") {
-	    const std::vector<std::string> input = {};
+	    const std::vector<std::string> input = {
+			"123 -> x",
+			"456 -> y",
+			"x AND y -> d",
+			"x OR y -> e",
+			"x LSHIFT 2 -> f",
+			"y RSHIFT 2 -> g",
+			"NOT x -> h",
+			"NOT y -> i"
+		};
 
 	    Day07Puzzle puzzle{};
 	    puzzle.setVerbose(true);

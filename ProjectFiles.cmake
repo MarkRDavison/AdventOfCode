@@ -8,6 +8,7 @@ SET(CORE_HEADER_FILES ${CORE_HEADER_FILES}
 	${CMAKE_SOURCE_DIR}/include/Core/PuzzleBase.hpp
 	${CMAKE_SOURCE_DIR}/include/Core/PuzzleConstructor.hpp	
 	${CMAKE_SOURCE_DIR}/include/Core/Region.hpp	
+	${CMAKE_SOURCE_DIR}/include/Core/States.hpp
 	${CMAKE_SOURCE_DIR}/include/Core/StringExtensions.hpp
 	${CMAKE_SOURCE_DIR}/include/Core/Vector2.hpp		
 )
@@ -17,11 +18,13 @@ SET(CORE_SOURCE_FILES ${CORE_SOURCE_FILES}
 	${CMAKE_SOURCE_DIR}/src/Core/PuzzleBase.cpp
 	${CMAKE_SOURCE_DIR}/src/Core/PuzzleConstructor.cpp	
 	${CMAKE_SOURCE_DIR}/src/Core/PuzzleConstructor.cpp	
+	${CMAKE_SOURCE_DIR}/src/Core/States.cpp	
 	${CMAKE_SOURCE_DIR}/src/Core/StringExtensions.cpp	
 )
 SET(CORE_TEST_SOURCE_FILES ${CORE_TEST_SOURCE_FILES}
 	${CMAKE_SOURCE_DIR}/test/Core/PathfindingTests.cpp
 	${CMAKE_SOURCE_DIR}/test/Core/RegionTests.cpp
+	${CMAKE_SOURCE_DIR}/test/Core/StatesTests.cpp
 )
 
 # 2015 Puzzles
@@ -293,6 +296,8 @@ SET(2018_PUZZLES_TEST_SOURCE_FILES ${2018_PUZZLES_TEST_SOURCE_FILES}
 
 # 2019 Puzzles
 SET(2019_PUZZLES_HEADER_FILES ${2019_PUZZLES_HEADER_FILES}
+	${CMAKE_SOURCE_DIR}/include/2019/IntcodeMachine.hpp
+
 	${CMAKE_SOURCE_DIR}/include/2019/Day01Puzzle.hpp
 	${CMAKE_SOURCE_DIR}/include/2019/Day02Puzzle.hpp
 	${CMAKE_SOURCE_DIR}/include/2019/Day03Puzzle.hpp
@@ -320,6 +325,8 @@ SET(2019_PUZZLES_HEADER_FILES ${2019_PUZZLES_HEADER_FILES}
 	${CMAKE_SOURCE_DIR}/include/2019/Day25Puzzle.hpp
 ) 
 SET(2019_PUZZLES_SOURCE_FILES ${2019_PUZZLES_SOURCE_FILES}
+	${CMAKE_SOURCE_DIR}/src/2019/IntcodeMachine.cpp
+
 	${CMAKE_SOURCE_DIR}/src/2019/Day01Puzzle.cpp
 	${CMAKE_SOURCE_DIR}/src/2019/Day02Puzzle.cpp
 	${CMAKE_SOURCE_DIR}/src/2019/Day03Puzzle.cpp

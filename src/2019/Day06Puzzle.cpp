@@ -37,7 +37,7 @@ namespace TwentyNineteen {
 		});
 
 		auto tc = network.performDepthFirstSearch(centerOfMass, "");
-		auto part1Network = std::accumulate(tc.begin(), tc.end(), 0u, [](unsigned _a, const auto& _p) -> unsigned { return _a + _p.second; });			   
+		auto part1Network = std::accumulate(tc.begin(), tc.end(), 0u, [](unsigned _a, const auto& _p) -> unsigned { return _a + _p.second.second; });			   
 		auto part2Network = network.getShortestPath(you, santa).size() - 3; // Subtract 3, 1 for santa/you node, and another because this counts nodes not edges
 
 		return { std::to_string(part1Network), std::to_string(part2Network) };

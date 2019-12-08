@@ -51,6 +51,10 @@ namespace internal {
 		float cost(const std::string& _from, const std::string& _to) {
 			return weights[_from + "_" + _to];
 		}
+
+		float heuristic(const std::string& _from, const std::string& _to) {
+			return static_cast<float>(std::abs(weights[_from] - weights[_to]));
+		}
 	};
 
 	struct CartesianGraph {
@@ -128,15 +132,15 @@ namespace internal {
 	}
 
 	template <typename Graph, typename Node>
-	std::vector<std::pair<Node, unsigned>> depthFirstSearch(Graph& _graph, Node _start, Node _end) {
+	std::vector<std::pair<Node, std::pair<unsigned, float>>> depthFirstSearch(Graph& _graph, Node _start, Node _end) {
 		std::unordered_set<Node> visited;
 		visited.insert(_start);
-		return depthFirstSearchRecursion(_graph, visited, _start, _end, 0);
+		return depthFirstSearchRecursion(_graph, visited, _start, _end, std::make_pair(0, 0.0f));
 	}
 
 	template <typename Graph, typename Node>
-	std::vector<std::pair<Node, unsigned>> depthFirstSearchRecursion(Graph& _graph, std::unordered_set<Node>& _visited, Node _start, Node _end, unsigned _depth) {
-		std::vector<std::pair<Node, unsigned>> results{ {_start, _depth} };
+	std::vector<std::pair<Node, std::pair<unsigned, float>>> depthFirstSearchRecursion(Graph& _graph, std::unordered_set<Node>& _visited, Node _start, Node _end, std::pair<unsigned, float> _depthCost) {
+		std::vector<std::pair<Node, std::pair<unsigned, float>>> results{ {_start, _depthCost} };
 
 		if (_start == _end) {
 			return results;
@@ -145,7 +149,7 @@ namespace internal {
 		for (const auto& n : _graph.neighbours(_start)) {
 			if (_visited.find(n) == _visited.end()) {
 				_visited.insert(n);
-				const auto& childResult = depthFirstSearchRecursion(_graph, _visited, n, _end, _depth + 1);
+				const auto& childResult = depthFirstSearchRecursion(_graph, _visited, n, _end, std::make_pair(_depthCost.first + 1, _depthCost.second + _graph.cost(_start, n)));
 				for (const auto& cr : childResult) {
 					results.push_back(cr);
 				}
@@ -240,7 +244,12 @@ namespace core {
 		void addEdge(const std::string& _a, const std::string& _b);
 		void addEdge(const std::string& _a, const std::string& _b, float _weight);
 		std::vector<std::string> getShortestPath(const std::string& _start, const std::string& _end);
-		std::vector<std::pair<std::string, unsigned>> performDepthFirstSearch(const std::string& _start, const std::string& _end);
+		std::vector<std::pair<std::string, std::pair<unsigned, float>>> performDepthFirstSearch(const std::string& _start, const std::string& _end);
+		std::vector<std::pair<std::string, std::pair<unsigned, float>>> performBreadthFirstSearch(const std::string& _start, const std::string& _end);
+		unsigned performDijkstraSearch(const std::string& _start, const std::string& _end);
+		unsigned performAStarSearch(const std::string& _start, const std::string& _end);
+
+		unsigned depthFirstMinCostHeuristic(const std::string& _start);
 
 	private:
 		std::vector<std::string> getNodes();

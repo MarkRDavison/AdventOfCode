@@ -1,4 +1,5 @@
 #include <2019/Day02Puzzle.hpp>
+#include <2019/IntcodeMachine.hpp>
 #include <Core/StringExtensions.hpp>
 #include <cassert>
 
@@ -27,88 +28,35 @@ namespace TwentyNineteen {
 
 	std::pair<std::string, std::string> Day02Puzzle::fastSolve() {
 
+		IntcodeMachine machine{};
 
-		std::vector<long> valuesStart;
-		for (const auto& strValue : core::StringExtensions::splitStringByDelimeter(m_InputLines[0], ",")) {
-			valuesStart.emplace_back(std::atoi(strValue.c_str()));			
-		}
+		machine.loadProgram(m_InputLines[0]);
+
+		machine.setValue(12, 1);
+		machine.setValue(2, 2);
+
+		machine.execute();
+
+		unsigned part1 = machine.getValue(0);
 
 		const long target = 19690720;
 		const long guessMax = 99;
 		const long guessMin = 0;
-		std::string part2;
 
-		for (long n = guessMin; n < guessMax; ++n) {
-			for (long v = guessMin; v < guessMax; ++v) {
-				std::vector<long> values(valuesStart);
+		for (long noun = guessMin; noun < guessMax; ++noun) {
+			for (long verb = guessMin; verb < guessMax; ++verb) {
+				machine.resetProgram();
 
-				const long noun = n;
-				const long verb = v;
+				machine.setValue(noun, 1);
+				machine.setValue(verb, 2);
 
-				values[1] = noun;
-				values[2] = verb;
-				unsigned int index = 0;
-				unsigned counter = 0;
-				while (true) {
-					index++;
-					const auto& opcode = values[counter];
+				machine.execute();
 
-					if (opcode == OPCODE_STOP) {
-						break;
-					}
-
-					const auto& val1 = values[values[counter + 1]];
-					const auto& val2 = values[values[counter + 2]];
-					auto& result = values[values[counter + 3]];
-
-					if (opcode == OPCODE_ADD) {
-						result = val1 + val2;
-					} else if (opcode == OPCODE_MUL) {
-						result = val1 * val2;
-					}
-
-					counter += 4;
+				if (machine.getValue(0) == target) {
+					return { std::to_string(part1), std::to_string(noun * 100 + verb) };
 				}
-
-				if (values[0] == target) {
-					part2 = std::to_string(n) + " x 100 + " + std::to_string(v) + " = " + std::to_string(n * 100 + v);
-				}
-
 			}
 		}
-
-		{
-			std::vector<long> values(valuesStart);
-
-			const long noun = 12;
-			const long verb = 2;
-
-			values[1] = noun;
-			values[2] = verb;
-			unsigned int index = 0;
-			unsigned counter = 0;
-			while (true) {
-				index++;
-				const auto& opcode = values[counter];
-
-				if (opcode == OPCODE_STOP) {
-					return { std::to_string(values[0]), part2 };
-				}
-
-				const auto& val1 = values[values[counter + 1]];
-				const auto& val2 = values[values[counter + 2]];
-				auto& result = values[values[counter + 3]];
-
-				if (opcode == OPCODE_ADD) {
-					result = val1 + val2;
-				} else if (opcode == OPCODE_MUL) {
-					result = val1 * val2;
-				}
-
-				counter += 4;
-			}
-		}
-
-
+		return { std::to_string(part1), "Could not find solution" };
 	}
 }

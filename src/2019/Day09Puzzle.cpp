@@ -5,7 +5,7 @@
 namespace TwentyNineteen {
 	
 	Day09Puzzle::Day09Puzzle() :
-		core::PuzzleBase("", 2019, 9) {
+		core::PuzzleBase("Sensor Boost", 2019, 9) {
 
 	}
 	Day09Puzzle::~Day09Puzzle() {

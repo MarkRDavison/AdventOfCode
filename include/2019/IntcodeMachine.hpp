@@ -7,20 +7,22 @@
 
 namespace TwentyNineteen {
 
+	using IntcodeValue = long long;
+
 	class IntcodeMachine {
 	public:
 		void loadProgram(const std::string& _program);
 		void resetProgram();
 		void execute();
 
-		void setValue(long _value, unsigned _memoryIndex);
-		long getValue(unsigned _memoryIndex) const;
-		void setInput(long _value) { m_Input.push(_value); }
-		long getOutput() { 
+		void setValue(IntcodeValue _value, unsigned _memoryIndex);
+		IntcodeValue getValue(unsigned _memoryIndex) const;
+		void setInput(IntcodeValue _value) { m_Input.push(_value); }
+		IntcodeValue getOutput() {
 			m_OutputRetrieved = true;
 			return m_Output; 
 		}
-
+		IntcodeValue& getValue(IntcodeValue _mode, unsigned _pc);
 		void haltWhenInputEmpty(bool _halt) { m_HaltWhenInputEmpty = _halt; }
 		void haltWhenOutputSet(bool _halt) { m_HaltWhenOutputSet = _halt; }
 
@@ -28,12 +30,13 @@ namespace TwentyNineteen {
 
 	private:
 		unsigned m_ProgramCounter{ 0 };
-		std::vector<long> m_Program;
-		std::vector<long> m_Memory;
+		unsigned m_RelativeBase{ 0 };
+		std::vector<IntcodeValue> m_Program;
+		std::vector<IntcodeValue> m_Memory;
 
-		std::queue<long> m_Input;
+		std::queue<IntcodeValue> m_Input;
 
-		long m_Output{ 0 };
+		IntcodeValue m_Output{ 0 };
 		bool m_OutputRetrieved{ false };
 
 		bool m_HaltWhenInputEmpty{ false };

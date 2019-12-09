@@ -14,6 +14,8 @@ namespace TwentyFifteen {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		static std::string calculateLookAndSay(const std::string& _input);
+
 	private:
 		std::vector<std::string> m_InputLines;
 	};

@@ -81,17 +81,20 @@ namespace TwentyNineteen {
 				m_ProgramCounter += 4;
 			} 
 			else if (DE == OPCODE_3) {
+
 				auto& parameter_C = getValue(C, m_ProgramCounter + 1);
 
 				if (m_Input.empty() && m_HaltWhenInputEmpty) {
 					break;
 				}
+
 				parameter_C = m_Input.front();
 				m_Input.pop();
 				m_ProgramCounter += 2;
 
 			} 
 			else if (DE == OPCODE_4) {
+
 				auto& parameter_C = getValue(C, m_ProgramCounter + 1);
 
 				m_Output = parameter_C;
@@ -101,14 +104,18 @@ namespace TwentyNineteen {
 					break;
 				}
 			} else if (DE == OPCODE_5) {
+
 				auto& parameter_C = getValue(C, m_ProgramCounter + 1);
+
 				if (parameter_C == 0) {
 					m_ProgramCounter += 3;
 					continue;
 				}
 
 				auto& parameter_B = getValue(B, m_ProgramCounter + 2);
+
 				assert(parameter_B > 0);
+
 				m_ProgramCounter = static_cast<unsigned>(parameter_B);
 			} else if (DE == OPCODE_6) {
 
@@ -119,13 +126,14 @@ namespace TwentyNineteen {
 				}
 
 				auto& parameter_B = getValue(B, m_ProgramCounter + 2);
+
 				assert(parameter_B > 0);
+
 				m_ProgramCounter = static_cast<unsigned>(parameter_B);
 			} else if (DE == OPCODE_7) {
+
 				auto& parameter_C = getValue(C, m_ProgramCounter + 1);
-
 				auto& parameter_B = getValue(B, m_ProgramCounter + 2);
-
 				auto& parameter_A = getValue(A, m_ProgramCounter + 3);
 
 				if (parameter_C < parameter_B) {
@@ -135,10 +143,9 @@ namespace TwentyNineteen {
 				}
 				m_ProgramCounter += 4;
 			} else if (DE == OPCODE_8) {
+
 				auto& parameter_C = getValue(C, m_ProgramCounter + 1);
-
 				auto& parameter_B = getValue(B, m_ProgramCounter + 2);
-
 				auto& parameter_A = getValue(A, m_ProgramCounter + 3);
 
 				if (parameter_C == parameter_B) {
@@ -146,12 +153,15 @@ namespace TwentyNineteen {
 				} else {
 					parameter_A = 0;
 				}
+
 				m_ProgramCounter += 4;
 			} else if (DE == OPCODE_9) {
-				auto& parameter_C = getValue(C, m_ProgramCounter + 1);
-				
-				IntcodeValue newRelativeBase = static_cast<IntcodeValue>(m_RelativeBase) + parameter_C;
+
+				auto& parameter_C = getValue(C, m_ProgramCounter + 1);				
+				auto newRelativeBase = static_cast<IntcodeValue>(m_RelativeBase) + parameter_C;
+
 				assert(newRelativeBase > 0);
+
 				m_RelativeBase = static_cast<unsigned>(newRelativeBase);
 				m_ProgramCounter += 2;
 			} else if (DE == OPCODE_STOP) {

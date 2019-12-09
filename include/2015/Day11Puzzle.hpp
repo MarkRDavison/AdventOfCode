@@ -14,6 +14,9 @@ namespace TwentyFifteen {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		static bool isValid(const std::string& _password);
+		static std::string incrementPassword(const std::string& _password);
+
 	private:
 		std::vector<std::string> m_InputLines;
 	};

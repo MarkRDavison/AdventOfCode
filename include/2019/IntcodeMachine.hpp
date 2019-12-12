@@ -14,6 +14,12 @@ namespace TwentyNineteen {
 		void loadProgram(const std::string& _program);
 		void resetProgram();
 		void execute();
+		enum class ExecutionResult {
+			Input,
+			Output,
+			Halt
+		};
+		ExecutionResult executeResult();
 
 		void setValue(IntcodeValue _value, unsigned _memoryIndex);
 		IntcodeValue getValue(unsigned _memoryIndex) const;
@@ -27,6 +33,10 @@ namespace TwentyNineteen {
 		void haltWhenOutputSet(bool _halt) { m_HaltWhenOutputSet = _halt; }
 
 		bool hasHaltedFromOpCode() const { return m_HasHaltedFromOpCode; }
+
+		bool hasOutput() const {
+			return m_OutputRetrieved;
+		}
 
 	private:
 		unsigned m_ProgramCounter{ 0 };

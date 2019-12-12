@@ -162,10 +162,11 @@ namespace TwentyNineteen {
 			const Moon& m0 = moons[0];
 			const Moon& m1 = moons[1];
 			const Moon& m2 = moons[2];
+			const Moon& m2 = moons[3];
 
-			auto moonState_x = getMoonState(m0, 1) + getMoonState(m1, 1) + getMoonState(m2, 1);
-			auto moonState_y = getMoonState(m0, 2) + getMoonState(m1, 2) + getMoonState(m2, 2);
-			auto moonState_z = getMoonState(m0, 3) + getMoonState(m1, 3) + getMoonState(m2, 3);
+			auto moonState_x = getMoonState(m0, 1) + getMoonState(m1, 1) + getMoonState(m2, 1) + getMoonState(m3, 1);
+			auto moonState_y = getMoonState(m0, 2) + getMoonState(m1, 2) + getMoonState(m2, 2) + getMoonState(m3, 2);
+			auto moonState_z = getMoonState(m0, 3) + getMoonState(m1, 3) + getMoonState(m2, 3) + getMoonState(m3, 3);
 
 			locationCount[0][moonState_x].push_back(steps);
 			locationCount[1][moonState_y].push_back(steps);

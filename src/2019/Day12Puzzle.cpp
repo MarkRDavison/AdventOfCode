@@ -71,9 +71,6 @@ namespace TwentyNineteen {
 					m1_edit.zv--;
 					m2_edit.zv++;
 				}
-
-
-
 			}
 		}
 
@@ -176,20 +173,24 @@ namespace TwentyNineteen {
 				part1 = std::to_string(getEnergy(moons));
 			}
 
-			if (steps == 1000000) {
+			if (steps % 50000 == 0) {
+				bool valid = true;
 				for (unsigned d = 0; d < 3; ++d) {
 					for (auto& thing : locationCount[d]) {
 						if (thing.second.size() >= 2) {
-
 							vv.push_back(thing.second[1] - thing.second[0]);
+							break;
+						} else {
+							valid = false;
 							break;
 						}
 					}
 
 				}
-
-				auto lc = std::accumulate(vv.begin(), vv.end(), 1ll, [](auto _1, auto _2) { return std::lcm(_1, _2); });
-				return { part1, std::to_string(lc) };
+				if (valid) {
+					auto lc = std::accumulate(vv.begin(), vv.end(), 1ll, [](auto _1, auto _2) { return std::lcm(_1, _2); });
+					return { part1, std::to_string(lc) };
+				}
 			}
 
 			step(moons);

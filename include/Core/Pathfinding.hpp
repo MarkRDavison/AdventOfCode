@@ -17,24 +17,29 @@ namespace std {
 		}
 	};
 }
-
 namespace internal {
 
-	template<typename T, typename priority_t>
+	template<typename Coordinate, typename PriorityValue >
 	struct PriorityQueue {
-		typedef std::pair<priority_t, T> PQElement;
-		std::priority_queue<PQElement, std::vector<PQElement>, std::greater<PQElement>> elements;
+
+		typedef std::pair<PriorityValue, Coordinate> CoordinatePriorityElement;
+		struct PairCompareFxn {
+			bool operator()(CoordinatePriorityElement _lhs, CoordinatePriorityElement _rhs) {
+				return _lhs.first > _rhs.first;
+			}
+		};
+		std::priority_queue<CoordinatePriorityElement, std::vector<CoordinatePriorityElement>, PairCompareFxn> elements;
 
 		inline bool empty() const {
 			return elements.empty();
 		}
 
-		inline void put(T item, priority_t priority) {
+		inline void put(Coordinate item, PriorityValue priority) {
 			elements.emplace(priority, item);
 		}
 
-		T get() {
-			T best_item = elements.top().second;
+		Coordinate get() {
+			Coordinate best_item = elements.top().second;
 			elements.pop();
 			return best_item;
 		}
@@ -57,6 +62,7 @@ namespace internal {
 		}
 	};
 
+	template <typename Cell>
 	struct CartesianGraph {
 
 		std::vector<core::Vector2i> neighbours(const core::Vector2i& _id) {
@@ -69,23 +75,23 @@ namespace internal {
 
 			std::vector<core::Vector2i> n;
 
+			if (_id.y > 0) {
+				if (cells[_id.y - 1][_id.x].valid()) {
+					n.push_back({ _id.x, _id.y - 1 });
+				}
+			}
 			if (_id.x > 0) {
-				if (cells[_id.y][_id.x - 1]) {
+				if (cells[_id.y][_id.x - 1].valid()) {
 					n.push_back({ _id.x - 1, _id.y });
 				}
 			}
 			if (_id.x + 1 < width) {
-				if (cells[_id.y][_id.x + 1]) {
+				if (cells[_id.y][_id.x + 1].valid()) {
 					n.push_back({ _id.x + 1, _id.y });
 				}
 			}
-			if (_id.y > 0) {
-				if (cells[_id.y - 1][_id.x]) {
-					n.push_back({ _id.x, _id.y - 1 });
-				}
-			}
 			if (_id.y + 1 < height) {
-				if (cells[_id.y + 1][_id.x]) {
+				if (cells[_id.y + 1][_id.x].valid()) {
 					n.push_back({ _id.x, _id.y + 1 });
 				}
 			}
@@ -94,14 +100,14 @@ namespace internal {
 		}
 
 		float cost(const core::Vector2i& _from, const core::Vector2i& _to) {
-			return 1.0f;
+			return cells[_from.y][_from.x].costTo(cells[_to.y][_to.x]);
 		}
 
 		float heuristic(const core::Vector2i& _a, const core::Vector2i& _b) {
 			return static_cast<float>(std::abs(_a.x - _b.x) + std::abs(_a.y - _b.y));
 		}
 
-		std::vector<std::vector<bool>> cells;
+		std::vector<std::vector<Cell>> cells;
 	};
 
 	template <typename Graph, typename Node>
@@ -256,6 +262,22 @@ namespace core {
 
 	private:
 		internal::EdgeGraph sg{};
+	};
+
+	template <typename Cell>
+	class CartesianNetwork {
+	public:
+		std::vector<Vector2i> performAStarSearch(const Vector2i& _start, const Vector2i& _end) {
+			std::unordered_map<Vector2i, Vector2i> origins;
+			std::unordered_map<Vector2i, float> costs;
+			internal::aStarSearch<internal::CartesianGraph<Cell>, Vector2i>(cg, _start, _end, origins, costs);
+			return internal::reconstruct_path(_start, _end, origins);			
+		}
+
+		std::vector<std::vector<Cell>>& getCells() { return cg.cells; }
+
+	private:
+		internal::CartesianGraph<Cell> cg{};
 	};
 
 

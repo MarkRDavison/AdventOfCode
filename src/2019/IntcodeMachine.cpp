@@ -108,7 +108,7 @@ namespace TwentyNineteen {
 
 				auto& parameter_B = getValue(B, m_ProgramCounter + 2);
 
-				assert(parameter_B > 0);
+				assert(parameter_B >= 0);
 
 				m_ProgramCounter = static_cast<unsigned>(parameter_B);
 			} else if (DE == OPCODE_6) {
@@ -121,7 +121,7 @@ namespace TwentyNineteen {
 
 				auto& parameter_B = getValue(B, m_ProgramCounter + 2);
 
-				assert(parameter_B > 0);
+				assert(parameter_B >= 0);
 
 				m_ProgramCounter = static_cast<unsigned>(parameter_B);
 			} else if (DE == OPCODE_7) {
@@ -154,7 +154,7 @@ namespace TwentyNineteen {
 				auto& parameter_C = getValue(C, m_ProgramCounter + 1);
 				auto newRelativeBase = static_cast<IntcodeValue>(m_RelativeBase) + parameter_C;
 
-				assert(newRelativeBase > 0);
+				assert(newRelativeBase >= 0);
 
 				m_RelativeBase = static_cast<unsigned>(newRelativeBase);
 				m_ProgramCounter += 2;
@@ -227,7 +227,7 @@ namespace TwentyNineteen {
 
 				auto& parameter_B = getValue(B, m_ProgramCounter + 2);
 
-				assert(parameter_B > 0);
+				assert(parameter_B >= 0);
 
 				m_ProgramCounter = static_cast<unsigned>(parameter_B);
 			} else if (DE == OPCODE_6) {
@@ -240,7 +240,7 @@ namespace TwentyNineteen {
 
 				auto& parameter_B = getValue(B, m_ProgramCounter + 2);
 
-				assert(parameter_B > 0);
+				assert(parameter_B >= 0);
 
 				m_ProgramCounter = static_cast<unsigned>(parameter_B);
 			} else if (DE == OPCODE_7) {
@@ -273,7 +273,7 @@ namespace TwentyNineteen {
 				auto& parameter_C = getValue(C, m_ProgramCounter + 1);				
 				auto newRelativeBase = static_cast<IntcodeValue>(m_RelativeBase) + parameter_C;
 
-				assert(newRelativeBase > 0);
+				assert(newRelativeBase >= 0);
 
 				m_RelativeBase = static_cast<unsigned>(newRelativeBase);
 				m_ProgramCounter += 2;

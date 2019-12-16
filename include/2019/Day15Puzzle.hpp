@@ -2,11 +2,14 @@
 #define INCLUDED_ADVENT_OF_CODE_2019_DAY_15_PUZZLE_HPP_
 
 #include <Core/PuzzleBase.hpp>
+#include <Core/Vector2.hpp>
 
 namespace TwentyNineteen {
 	
 	class Day15Puzzle : public core::PuzzleBase {
 	public:
+		static core::Vector2i oxyLocation;
+
 		Day15Puzzle();
 		~Day15Puzzle() override;
 

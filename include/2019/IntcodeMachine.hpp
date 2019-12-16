@@ -11,6 +11,9 @@ namespace TwentyNineteen {
 
 	class IntcodeMachine {
 	public:
+		IntcodeMachine();
+		//IntcodeMachine(const IntcodeMachine& _copy);
+
 		void loadProgram(const std::string& _program);
 		void resetProgram();
 		void execute();

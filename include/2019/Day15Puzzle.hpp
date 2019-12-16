@@ -8,8 +8,6 @@ namespace TwentyNineteen {
 	
 	class Day15Puzzle : public core::PuzzleBase {
 	public:
-		static core::Vector2i oxyLocation;
-
 		Day15Puzzle();
 		~Day15Puzzle() override;
 

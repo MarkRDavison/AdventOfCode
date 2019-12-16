@@ -4,6 +4,7 @@
 #include <Core/Region.hpp>
 #include <Core/Orientation.hpp>
 #include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 #include <cassert>
 
@@ -14,45 +15,80 @@
 
 #define STATUS_HIT_WALL 0
 #define STATUS_MOVE 1
-#define STATUS_MOVE_ARRIVE 2
+#define STATUS_HIT_OXYGEN 2
 
 #define DROID 'D'
 #define WALL '#'
 #define VACANT '.'
-#define OXYGEN '*'
+#define OXYGEN '@'
 #define UNKNOWN '?'
 #define START 'S'
 
 namespace TwentyNineteen {
 
-	core::Vector2i Day15Puzzle::oxyLocation{ 99999, -999999 };
+	enum class Type {
+		Unkown = 0,
+		Droid,
+		Wall,
+		Vacant,
+		Oxygen,
+		Start
+	};
 
-	static bool found = false;
+	struct Droid {
+
+		Droid() {};
+		Droid(const Droid& _droid) :
+			m(_droid.m),
+			position(_droid.position) {
+		}
+
+		IntcodeMachine m;
+		core::Vector2i position;
+	};
 
 	struct Cell {
 
 		Cell() :
-		value(UNKNOWN),
-		allNeighboursExplored(false),
-		isDeadEnd(false),
-		cost(0),
-		cameFrom(0),
-		oxyCost(999999) {
+			type(Type::Unkown),
+			allNeighboursExplored(false),
+			cost(0),
+			cameFrom(0),
+			oxyCost(999999)
+		{
 
 		}
 
-		char value{ UNKNOWN };
-
-		bool allNeighboursExplored{ false };
-
-		bool isDeadEnd{ false };
-
-		int cost{ 0};
-
-		IntcodeValue cameFrom{ 0 };
-		int oxyCost{ 999999 };
-
+		Type type;
+		bool allNeighboursExplored;
+		int cost;
+		int cameFrom;
+		int oxyCost;
 	};
+
+	class CustomMap {
+	public:
+		Cell& getCell(int _x, int _y) {
+			minY = std::min(minY, _y);
+			maxY = std::max(maxY, _y);
+			minX = std::min(minX, _x);
+			maxX = std::max(maxX, _x);
+			const std::string key = std::to_string(_x) + "_" + std::to_string(_y);
+			if (cells.find(key) == cells.end()) {
+				cells[key] = Cell();
+			}
+			return cells[key];
+		}
+
+		int minY{ 0 };
+		int maxY{ 0 };
+		int minX{ 0 };
+		int maxX{ 0 };
+	private:
+		std::unordered_map<std::string, Cell> cells;
+	};
+
+	using Map = core::Region<Cell>;
 	
 	Day15Puzzle::Day15Puzzle() :
 		core::PuzzleBase("Oxygen System", 2019, 15) {
@@ -71,542 +107,284 @@ namespace TwentyNineteen {
 		m_InputLines = std::vector<std::string>(_inputLines);
 	}
 
-	void dumpRegion(core::Region<Cell>& _region, core::Vector2i _droid) {
-		std::cout << "=================" << std::endl;
-		for (int y = _region.minY; y <= _region.maxY; ++y) {
-			for (int x = _region.minX; x <= _region.maxX; ++x) {
-				if (_droid.x == x && _droid.y == y) {
-					std::cout << DROID;
-				} else if (x == 0 && y == 0) {
-					std::cout << START;
-				} else  {
-					std::cout << _region.getCell(x, y).value;
-				}
-			}
-			std::cout << std::endl;
+	core::Vector2i getOffsetFromInput(IntcodeValue _input) {
+		switch (_input) {
+		case NORTH:
+			return core::Vector2i(+0, -1);
+		case SOUTH:
+			return core::Vector2i(+0, +1);
+		case EAST:
+			return core::Vector2i(+1, +0);
+		case WEST:
+			return core::Vector2i(-1, +0);
+		default:
+			throw std::runtime_error("Invalid input");
 		}
 	}
 
-	void appendNonVisitedNeighbourToQueue(const core::Vector2i& _location, std::queue<core::Vector2i>& _queue, const std::unordered_set<core::Vector2i, core::vector2_hash_fxn>& _visited) {
-
-		if (_visited.count(_location + core::Vector2i(+0, -1)) == 0) {
-			// NORTH
-			_queue.push(_location + core::Vector2i(+0, -1));
-			return;
+	IntcodeValue getOppositeInput(IntcodeValue _input) {
+		switch (_input) {
+		case NORTH:
+			return SOUTH;
+		case SOUTH:
+			return NORTH;
+		case EAST:
+			return WEST;
+		case WEST:
+			return EAST;
+		default:
+			throw std::runtime_error("Invalid input");
 		}
-		if (_visited.count(_location + core::Vector2i(+0, +1)) == 0) {
-			// SOUTH
-			_queue.push(_location + core::Vector2i(+0, +1));
-			return;
-		}
-		if (_visited.count(_location + core::Vector2i(+1, +0)) == 0) {
-			// EAST
-			_queue.push(_location + core::Vector2i(+1, +0));
-			return;
-		}
-		if (_visited.count(_location + core::Vector2i(-1, +0)) == 0) {
-			// WEST
-			_queue.push(_location + core::Vector2i(-1, +0));
-			return;
-		}
-
 	}
 
-	bool areAllNeighboursWallsOrOfLowerCost(const core::Vector2i& _location, core::Region<Cell>& _region) {
-		Cell& current = _region.getCell(_location.x, _location.y);
+	IntcodeValue getResponse(Droid *_droid, IntcodeValue _input) {
+		_droid->m.setInput(_input);
+		auto response = _droid->m.executeResult();
+		assert(response == IntcodeMachine::ExecutionResult::Output);
+		return _droid->m.getOutput();
+	}
 
-		if (!current.allNeighboursExplored) {
+	bool exploreAndReturnSingleDirection(Map& _region, Droid *_droid, IntcodeValue _input) {
+		IntcodeValue result = getResponse(_droid, _input);
+		core::Vector2i location = _droid->position + getOffsetFromInput(_input);
+		Cell& cell = _region.getCell(location.x, location.y);
+		if (result == STATUS_HIT_WALL) {
+			cell.type = Type::Wall;
+		} else if (result == STATUS_MOVE) {
+			cell.type = Type::Vacant;
+			assert(STATUS_MOVE == getResponse(_droid, getOppositeInput(_input)));
+		} else {
+			cell.type = Type::Oxygen;
+			cell.cost = _region.getCell(_droid->position.x, _droid->position.y).cost + 1;
+			cell.cameFrom = getOppositeInput(_input);
 			return false;
 		}
-
-		auto& north = _region.getCell(_location.x + 0, _location.y - 1);
-		auto& south = _region.getCell(_location.x + 0, _location.y + 1);
-		auto& east = _region.getCell(_location.x + 1, _location.y + 0);
-		auto& west = _region.getCell(_location.x - 1, _location.y + 0);
-
-		if ((north.value == WALL || north.cost < current.cost) &&
-			(south.value == WALL || south.cost < current.cost) &&
-			(east.value == WALL || east.cost < current.cost) &&
-			(west.value == WALL || west.cost < current.cost)) {
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
-	void appendNonVisitedNeighbourToQueue(const core::Vector2i& _location, std::queue<IntcodeValue>& _queue, const std::unordered_set<core::Vector2i, core::vector2_hash_fxn>& _visited, core::Region<Cell>& _region) {
+	std::vector<IntcodeValue> getDirectionsNotExplored(Map& _region, Droid *_droid) {
+		std::vector<IntcodeValue> directions;
 
-		if (_visited.count(_location + core::Vector2i(+0, -1)) == 0) {
-			// NORTH
-			_queue.push(NORTH);
-			return;
-		}
-		if (_visited.count(_location + core::Vector2i(+0, +1)) == 0) {
-			// SOUTH
-			_queue.push(SOUTH);
-			return;
-		}
-		if (_visited.count(_location + core::Vector2i(+1, +0)) == 0) {
-			// EAST
-			_queue.push(EAST);
-			return;
-		}
-		if (_visited.count(_location + core::Vector2i(-1, +0)) == 0) {
-			// WEST
-			_queue.push(WEST);
-			return;
+		Cell& north = _region.getCell(_droid->position.x + 0, _droid->position.y - 1);
+		if (north.type == Type::Vacant && !north.allNeighboursExplored) {
+			directions.push_back(NORTH);
 		}
 
-		std::cout << "Failed to append a non visited neighbour, falling back to neighbour that is vacant" << std::endl;
+		Cell& east  = _region.getCell(_droid->position.x + 1, _droid->position.y + 0);
+		if (east.type == Type::Vacant && !east.allNeighboursExplored) {
+			directions.push_back(EAST);
+		}
 
-		auto& north = _region.getCell(_location.x + 0, _location.y - 1);
-		auto& south = _region.getCell(_location.x + 0, _location.y + 1);
-		auto& east  = _region.getCell(_location.x + 1, _location.y + 0);
-		auto& west  = _region.getCell(_location.x - 1, _location.y + 0);
+		Cell& south = _region.getCell(_droid->position.x + 0, _droid->position.y + 1);
+		if (south.type == Type::Vacant && !south.allNeighboursExplored) {
+			directions.push_back(SOUTH);
+		}
 
-		int valid = 0;
-		if (north.value == VACANT && !north.isDeadEnd) {
-			valid++;
+		Cell& west  = _region.getCell(_droid->position.x - 1, _droid->position.y + 0);
+		if (west.type == Type::Vacant && !west.allNeighboursExplored) {
+			directions.push_back(WEST);
 		}
-		if (south.value == VACANT && !south.isDeadEnd) {
-			valid++;
-		}
-		if (east.value == VACANT && !east.isDeadEnd) {
-			valid++;
-		}
-		if (west.value == VACANT && !west.isDeadEnd) {
-			valid++;
-		}
-		if (valid == 1) {
-			{
-				if (north.value == VACANT) {
-					// NORTH
-					_queue.push(NORTH);
-					return;
-				}
-			}
-			{
-				if (south.value == VACANT) {
-					// SOUTH
-					_queue.push(SOUTH);
-					return;
-				}
-			}
-			{
-				if (east.value == VACANT) {
-					// EAST
-					_queue.push(EAST);
-					return;
-				}
-			}
-			{
-				if (west.value == VACANT) {
-					// WEST
-					_queue.push(WEST);
-					return;
-				}
+
+		return directions;
+	}
+
+	void exploreAllAdjacentCellsAndReturnToStart(Map& _region, Droid *_droid) {
+		Cell& current = _region.getCell(_droid->position.x, _droid->position.y);
+		current.allNeighboursExplored = true;
+
+		if (exploreAndReturnSingleDirection(_region, _droid, NORTH)) {
+			Cell& north = _region.getCell(_droid->position.x + 0, _droid->position.y + 0);
+			if (north.cost == -1 && north.cameFrom == -1) {
+				north.cost = current.cost + 1;
+				north.cameFrom = SOUTH;
 			}
 		} else {
-			// We have multiple open ones, choose by highest cost
+			return;
+		}
 
-			std::cout << "Choosing the best cost as all neighbours have been visited" << std::endl;
-
-			auto cost = north.cost;
-			IntcodeValue inputToReturn = NORTH;
-
-			if (cost < south.cost) {
-				cost = south.cost;
-				inputToReturn = SOUTH;
+		if (exploreAndReturnSingleDirection(_region, _droid, EAST)) {
+			Cell& east = _region.getCell(_droid->position.x + 1, _droid->position.y + 0);
+			if (east.cost == -1 && east.cameFrom == -1) {
+				east.cost = current.cost + 1;
+				east.cameFrom = WEST;
 			}
-			if (cost < east.cost) {
-				cost = east.cost;
-				inputToReturn = EAST;
+		} else {
+			return;
+		}
+		if (exploreAndReturnSingleDirection(_region, _droid, SOUTH)) {
+			Cell& south = _region.getCell(_droid->position.x + 0, _droid->position.y + 1);
+			if (south.cost == -1 && south.cameFrom == -1) {
+				south.cost = current.cost + 1;
+				south.cameFrom = NORTH;
 			}
-			if (cost < west.cost) {
-				cost = west.cost;
-				inputToReturn = WEST;
+		} else {
+			return;
+		}
+		if (exploreAndReturnSingleDirection(_region, _droid, WEST)) {
+			Cell& west = _region.getCell(_droid->position.x - 1, _droid->position.y + 0);
+			if (west.cost == -1 && west.cameFrom == -1) {
+				west.cost = current.cost + 1;
+				west.cameFrom = EAST;
 			}
-			_queue.push(inputToReturn);
+		} else {
 			return;
 		}
-
-		std::cout << "Failed to append a visited vacant neighbour" << std::endl;
 	}
 
-	IntcodeValue getStatus(IntcodeValue _input, IntcodeMachine& _m) {
-		_m.setInput(_input);
-		
-		auto res = _m.executeResult();
+	void dumpRegion(Map& _region, const std::vector<Droid *>& _droids) {
+		static int iter = 0;
+		std::vector<std::string> regionTextVector;
+		for (int y = _region.minY; y <= _region.maxY; ++y) {
+			std::string regionText;
+			for (int x = _region.minX; x <= _region.maxX; ++x) {
+				bool found = false;
+				for (const Droid*d : _droids) {
+					if (d->position.x == x && d->position.y == y) {
+						found = true;
+						break;
+					}
+				}
+				if (found) {
+					regionText += DROID;
+					continue;
+				}
+				if (x == 0 && y == 0) {
+					regionText += START;
+				} else {
+					const auto& cell = _region.getCell(x, y);
+					switch (cell.type) {
+					case Type::Vacant:
+						regionText += VACANT;
+						break;
+					case Type::Wall:
+						regionText += WALL;
+						break;
+					case Type::Oxygen:
+						regionText += OXYGEN;
+						break;
+					case Type::Unkown:
+					default:
+						regionText += ' ';
+						break;
+					}
+				}
 
-		assert(res == IntcodeMachine::ExecutionResult::Output);
-
-		return _m.getOutput();
-	}
-
-	bool haveAllNeighboursBeenVisited(const core::Vector2i& _position, const std::unordered_set<core::Vector2i, core::vector2_hash_fxn>& _visited) {
-		return
-			_visited.count(_position + core::Vector2i(+1, +0)) > 0 &&
-			_visited.count(_position + core::Vector2i(-1, +0)) > 0 &&
-			_visited.count(_position + core::Vector2i(+0, +1)) > 0 &&
-			_visited.count(_position + core::Vector2i(+0, -1)) > 0;
-	}
-
-	IntcodeValue getInputFromPositionAndTarget(const core::Vector2i& _position, const core::Vector2i& _target) {
-		const auto offset = _target - _position;
-
-		if (offset == core::Vector2i{ 0, -1 }) {
-			// going up is north
-			return NORTH;
-		}
-		if (offset == core::Vector2i{ 0, +1 }) {
-			// going down is south
-			return SOUTH;
-		}
-		if (offset == core::Vector2i{ -1, 0 }) {
-			// going left is west
-			return WEST;
-		}
-		if (offset == core::Vector2i{ +1, 0 }) {
-			// going right is east
-			return EAST;
-		}
-
-		throw std::runtime_error("Invalid target position");
-	}
-
-	IntcodeValue getReverseInput(IntcodeValue _input) {
-		if (_input == NORTH) {
-			return SOUTH;
-		}
-		if (_input == SOUTH) {
-			return NORTH;
-		}
-		if (_input == EAST) {
-			return WEST;
-		}
-		if (_input == WEST) {
-			return EAST;
+			}
+			regionTextVector.push_back(regionText);
 		}
 
-		throw std::runtime_error("Invalid input");
-	}
-
-	std::string inputToFriendy(IntcodeValue _input) {
-		if (_input == NORTH) {
-			return "NORTH";
-		}
-		if (_input == SOUTH) {
-			return "SOUTH";
-		}
-		if (_input == EAST) {
-			return "EAST";
-		}
-		if (_input == WEST) {
-			return "WEST";
-		}
-
-		throw std::runtime_error("Invalid input");
-	}
-
-	core::Vector2i getOffsetFromInput(IntcodeValue _input) {
-		if (_input == NORTH) {
-			return core::Vector2i{ 0,-1 };
-		}
-		if (_input == SOUTH) {
-			return core::Vector2i{ 0,+1 };
-		}
-		if (_input == EAST) {
-			return core::Vector2i{ +1,0 };
-		}
-		if (_input == WEST) {
-			return core::Vector2i{ -1,0 };
-		}
-
-		throw std::runtime_error("Invalid input");
-	}
-	void clearInputBuffer() // works only if the input buffer is not empty
-	{
-		char c;
-		do {
-			c = getchar();
-		} while (c != '\n' && c != EOF);
-	}
-
-	void moveDirectionReturnIfVacant(IntcodeMachine& _m, core::Region<Cell>& _region, std::unordered_set<core::Vector2i, core::vector2_hash_fxn>& _visited, IntcodeValue _direction, core::Vector2i _location) {
-
-		auto status = getStatus(_direction, _m);
-		auto newLoc = _location + getOffsetFromInput(_direction);
-
-		if (newLoc == Day15Puzzle::oxyLocation) {
-			return;
-		}
-
-		auto& cell = _region.getCell(newLoc.x, newLoc.y);
-		auto& current = _region.getCell(_location.x, _location.y);
-		_visited.insert(newLoc);
-
-		if (status == STATUS_HIT_WALL) {
-			cell.value = WALL;
-		}
-		else if (status == STATUS_MOVE) {
-			cell.value = VACANT;
-			auto status = getStatus(getReverseInput(_direction), _m);
-			assert(status == STATUS_MOVE || status == STATUS_MOVE_ARRIVE);
-		} else if (status == STATUS_MOVE_ARRIVE) {
-			Day15Puzzle::oxyLocation = newLoc;
-			_region.getCell(newLoc.x, newLoc.y).value = OXYGEN;
-			found = true;
+		std::cout << "==================" << iter++ << "====================" << std::endl;
+		for (const auto& _row : regionTextVector) {
+			std::cout << _row << std::endl;
 		}
 	}
 
-	void moveAllDirectionsReturnIfVacant(IntcodeMachine& _m, core::Region<Cell>& _region, std::unordered_set<core::Vector2i, core::vector2_hash_fxn>& _visited, core::Vector2i _location) {
-		moveDirectionReturnIfVacant(_m, _region, _visited, NORTH, _location);
-		moveDirectionReturnIfVacant(_m, _region, _visited, EAST, _location);
-		moveDirectionReturnIfVacant(_m, _region, _visited, SOUTH, _location);
-		moveDirectionReturnIfVacant(_m, _region, _visited, WEST, _location);
+	void floodFill(Map& _region, core::Vector2i& _start, int _depth) {
+		if (_start.y >= _region.minY &&
+			_start.y <= _region.maxY &&
+			_start.x >= _region.minX &&
+			_start.x <= _region.maxX) {
+			Cell& c = _region.getCell(_start.x, _start.y);
+			if ((c.type == Type::Vacant ||
+				c.type == Type::Oxygen ||
+				c.type == Type::Start) &&
+				c.oxyCost == 0) {
 
-		auto& current = _region.getCell(_location.x, _location.y);
+				c.oxyCost = _depth;
 
-		auto& north = _region.getCell(_location.x + 0, _location.y - 1);
-		if (north.cameFrom == -1) {
-			north.cameFrom = SOUTH;
-			north.cost = current.cost + 1;
-		}
-		auto& south = _region.getCell(_location.x + 0, _location.y + 1);
-		if (south.cameFrom == -1) {
-			south.cameFrom = NORTH;
-			south.cost = current.cost + 1;
-		}
-		auto& east = _region.getCell(_location.x + 1, _location.y + 0);
-		if (east.cameFrom == -1) {
-			east.cameFrom = WEST;
-			east.cost = current.cost + 1;
-		}
-		auto& west = _region.getCell(_location.x - 1, _location.y + 0);
-		if (west.cameFrom == -1) {
-			west.cameFrom = EAST;
-			west.cost = current.cost + 1;
-		}
+				floodFill(_region, _start + getOffsetFromInput(NORTH), _depth + 1);
+				floodFill(_region, _start + getOffsetFromInput(SOUTH), _depth + 1);
+				floodFill(_region, _start + getOffsetFromInput(EAST), _depth + 1);
+				floodFill(_region, _start + getOffsetFromInput(WEST), _depth + 1);
 
-		_region.getCell(_location.x, _location.y).allNeighboursExplored = true;
+			}
+		}
 	}
 
+	int findMaxDistanceFromOxygen(Map& _region, core::Vector2i& _start) {
+		floodFill(_region, _start, 0);
 
-	void appendVacantCellToQueue(const core::Vector2i& _location, std::queue<IntcodeValue>& _queue, const std::unordered_set<core::Vector2i, core::vector2_hash_fxn>& _visited, core::Region<Cell>& _region) {
-		auto& current = _region.getCell(_location.x, _location.y);
-		auto& north = _region.getCell(_location.x + 0, _location.y - 1);
-		auto& south = _region.getCell(_location.x + 0, _location.y + 1);
-		auto& east = _region.getCell(_location.x + 1, _location.y + 0);
-		auto& west = _region.getCell(_location.x - 1, _location.y + 0);
+		int max = 0;
 
-		if (north.value == VACANT &&
-			!north.allNeighboursExplored) {
-			_queue.push(NORTH);
-			return;
+		for (int y = _region.minY; y < _region.maxY; ++y) {
+			for (int x = _region.minX; x < _region.maxX; ++x) {
+				Cell& c = _region.getCell(x, y);
+				if (c.type != Type::Wall) {
+					max = std::max(max, c.oxyCost);
+				}
+			}
 		}
-		if (south.value == VACANT &&
-			!south.allNeighboursExplored) {
-			_queue.push(SOUTH);
-			return;
-		}
-		if (east.value == VACANT &&
-			!east.allNeighboursExplored) {
-			_queue.push(EAST);
-			return;
-		}
-		if (west.value == VACANT &&
-			!west.allNeighboursExplored) {
-			_queue.push(WEST);
-			return;
-		}
-
-		current.isDeadEnd = true;
-		_queue.push(current.cameFrom);
-	}
-
-	void floodFillOxygen(core::Region<Cell>& _region, core::Vector2i _loc, int _cost, int& _max) {
-		auto& cell = _region.getCell(_loc.x, _loc.y);
-		if (cell.value == WALL || 
-			cell.value == 0 ||
-			cell.oxyCost != 0) {
-			return;
-		}
-
-		if (cell.oxyCost == 0) {
-			cell.oxyCost = _cost;
-			_max = std::max(_max, cell.oxyCost);
-			floodFillOxygen(_region, _loc + getOffsetFromInput(NORTH), _cost + 1, _max);
-			floodFillOxygen(_region, _loc + getOffsetFromInput(EAST), _cost + 1, _max);
-			floodFillOxygen(_region, _loc + getOffsetFromInput(SOUTH), _cost + 1, _max);
-			floodFillOxygen(_region, _loc + getOffsetFromInput(WEST), _cost + 1, _max);
-		}
+		return max;
 	}
 
 	std::pair<std::string, std::string> Day15Puzzle::fastSolve() {
+		Map region;
+		Cell& start = region.getCell(0, 0);
+		{
+			start.type = Type::Vacant;
+			start.cameFrom = 0;
+			start.cost = 0;
+		}
+		Droid* droid = new Droid();
+		droid->m.loadProgram(m_InputLines[0]);
+		std::vector<Droid*> droids{ droid };
 
-		IntcodeMachine m{};
-		m.loadProgram(m_InputLines[0]);
-
-		int targetDirection = 1;
-
-		std::unordered_set<core::Vector2i, core::vector2_hash_fxn> visited;
-		core::Vector2i position{ 0,0 };
-		core::Region<Cell> region;
-		region.getCell(position.x, position.y).value = VACANT;
-		region.getCell(position.x, position.y).cost = 0;
-		visited.insert(position);
-
-		dumpRegion(region, position);
-		//getchar();
-
-		bool userInput = false;
-		bool wasJustSentBack = false;
-
-		std::queue<IntcodeValue> inputs;
-
-		auto exploreCurrentLocation = [&]() -> void {
-			if (!region.getCell(position.x, position.y).allNeighboursExplored) {
-				moveAllDirectionsReturnIfVacant(m, region, visited, position);
-			}
-			//dumpRegion(region, position); 
-		};
-
-		int iter = 0;
-
-		while (!found){
-			exploreCurrentLocation();
-			appendVacantCellToQueue(position, inputs, visited, region);
-			if (inputs.empty()) {
-				break;
-			}
-
-			if (iter > 1300) {
-				dumpRegion(region, position);
-				std::cout << "iter: " << iter << ", input: " << inputToFriendy(inputs.front()) << std::endl;
-				
-				break;
-			}
-
-			auto input = inputs.front();
-			inputs.pop();
-			auto status = getStatus(input, m);
-			assert(STATUS_MOVE == status || STATUS_MOVE_ARRIVE == status);
-			position += getOffsetFromInput(input);
-			iter++;
-		};
-		int max = 0;
-		auto& oxyCell = region.getCell(Day15Puzzle::oxyLocation.x, Day15Puzzle::oxyLocation.y);
-		oxyCell.value = OXYGEN;
-		floodFillOxygen(region, { Day15Puzzle::oxyLocation }, 1, max);
-		std::cout << "MAX: " << max << std::endl;
-
-		dumpRegion(region, position);
-		return { std::to_string(oxyCell.cost), std::to_string(max) };
-
-
-
-
-		while (!inputs.empty() || userInput) {
-
-			if (userInput) {
-				system("cls");
-				dumpRegion(region, position);
-			} else {
-				system("cls");
-				dumpRegion(region, position);
-				
-				getchar();
-			}
-
-
-
-			if (userInput) {
-				std::cout << "Enter Input: ";
-				int input = getchar();
-				clearInputBuffer();
-				if (input == (int)'N') {
-					targetDirection = NORTH;
-				} else if (input == (int)'S') {
-					targetDirection = SOUTH;
-				} else if (input == (int)'E') {
-					targetDirection = EAST;
-				} else if (input == (int)'W') {
-					targetDirection = WEST;
-				}
-			} else {
-				targetDirection = inputs.front();
-				inputs.pop();
-			}
-
-			auto loc = position + getOffsetFromInput(targetDirection);
-
-			visited.insert(loc);
-
-			auto status = getStatus(targetDirection, m);
-
-			if (status == STATUS_HIT_WALL) {
-				auto& cell = region.getCell(loc.x, loc.y);
-				cell.value = WALL;
-				if (!userInput) {
-					if (inputs.empty()) {
-						// Hit a wall, check if we are in a dead end.
-						if (haveAllNeighboursBeenVisited(position, visited)) {
-							// All have been visited
-							auto& pastCell = region.getCell(position.x, position.y);
-							pastCell.allNeighboursExplored = true;
-							std::cout << "We have hit a wall, and we have explored everywhere around us" << std::endl;
-						}
-
-						// Hit Wall and nothing left to do.
-						appendNonVisitedNeighbourToQueue(position, inputs, visited, region);
-
-
-					}
-				}
-			} 
-			else if (status == STATUS_MOVE) {
-				auto& pastCell = region.getCell(position.x, position.y);
-				auto& cell = region.getCell(loc.x, loc.y);
-				cell.value = VACANT;
-
-
-				pastCell.isDeadEnd = areAllNeighboursWallsOrOfLowerCost(loc, region);
-
-				if (cell.cost == 0) {
-					cell.cost = std::max(cell.cost, pastCell.cost + 1);
+		while (!droids.empty()) {
+			for (Droid *droid : std::vector<Droid*>(droids)) {
+				exploreAllAdjacentCellsAndReturnToStart(region, droid);
+				const auto& directionsToGo = getDirectionsNotExplored(region, droid);
+				if (directionsToGo.empty()) {
+					droids.erase(std::remove_if(droids.begin(), droids.end(), [droid](const Droid* _d) -> bool { return _d == droid; }), droids.end());
+					continue;
 				}
 
-				if (!userInput) {
-					if (haveAllNeighboursBeenVisited(position, visited) || wasJustSentBack) {
-						wasJustSentBack = false;
-						// All good, carry on, put random direction in the queue
-						appendNonVisitedNeighbourToQueue(loc, inputs, visited, region);
-						auto& cell = region.getCell(position.x, position.y);
-						cell.allNeighboursExplored = true;
-					} else {
-						// Go back
-						auto reverse = getReverseInput(targetDirection);
-						auto offset = getOffsetFromInput(reverse);
-
-						auto nextLocation = loc + offset;
-						auto& cell = region.getCell(nextLocation.x, nextLocation.y);
-						if (cell.allNeighboursExplored) {
-							// Dont go back...
-							appendNonVisitedNeighbourToQueue(position, inputs, visited, region);
-						} else {
-							// Go back and explore everything
-							inputs.push(reverse);
-							wasJustSentBack = true;
-						}
-					}
+				for (unsigned i = 1; i < directionsToGo.size(); ++i) {
+					Droid* newDroid = new Droid(*droid);
+					newDroid->position += getOffsetFromInput(directionsToGo[i]);
+					auto response = getResponse(newDroid, directionsToGo[i]);
+					assert(STATUS_MOVE == response);
+					droids.push_back(newDroid);
 				}
-				position = loc;
-			}
-			else {
-				assert(false);
+
+				droid->position += getOffsetFromInput(directionsToGo[0]);
+				auto response = getResponse(droid, directionsToGo[0]);
+				assert(STATUS_MOVE == response);
 			}
 		}
+		dumpRegion(region, droids);
 
-		return { "Part 1", "Part 2" };
+		for (Droid* d : droids) {
+			delete d;
+		}
+
+		core::Vector2i startLoc{ 0,0 };
+		core::Vector2i oxyLoc;
+		bool oxyFound = false;
+		for (int y = region.minY; y < region.maxY; ++y) {
+			for (int x = region.minX; x < region.maxX; ++x) {
+				if (region.getCell(x, y).type == Type::Oxygen) {
+					oxyFound = true;
+					oxyLoc.x = x;
+					oxyLoc.y = y;
+					break;
+				}
+			}
+			if (oxyFound) { break; }
+		}
+
+		core::Vector2i coord(oxyLoc);
+		int part1 = 0;
+		Cell current = region.getCell(coord.x, coord.y);
+		while (current.cameFrom != 0) {
+			auto offset = getOffsetFromInput(current.cameFrom);
+			coord += offset;
+			current = region.getCell(coord.x, coord.y);
+			part1++;
+		}
+
+		int part2 = findMaxDistanceFromOxygen(region, oxyLoc);
+
+
+		return { std::to_string(part1), std::to_string(part2) };
 	}
 }

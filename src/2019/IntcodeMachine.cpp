@@ -20,6 +20,24 @@
 
 namespace TwentyNineteen {
 
+	IntcodeMachine::IntcodeMachine(){}
+	//IntcodeMachine::IntcodeMachine(const IntcodeMachine& _copy) {
+	//	m_ProgramCounter = _copy.m_ProgramCounter;
+	//	m_RelativeBase = _copy.m_RelativeBase;
+	//
+	//	m_OutputRetrieved = _copy.m_OutputRetrieved;
+	//	m_HaltWhenInputEmpty = _copy.m_HaltWhenInputEmpty;
+	//	m_HaltWhenOutputSet = _copy.m_HaltWhenOutputSet;
+	//	m_HasHaltedFromOpCode = _copy.m_HasHaltedFromOpCode;
+	//	m_Output = _copy.m_Output;
+	//
+	//	m_Program = std::vector<IntcodeValue>(_copy.m_Program);
+	//	m_Memory = std::vector<IntcodeValue>(_copy.m_Memory);
+	//	m_Input = std::queue<IntcodeValue>(_copy.m_Input);
+	//
+	//
+	//}
+
 	void IntcodeMachine::loadProgram(const std::string& _program) {
 		m_Program.clear();
 		for (const auto& strValue : core::StringExtensions::splitStringByDelimeter(_program, ",")) {

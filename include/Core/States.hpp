@@ -12,21 +12,16 @@ namespace core {
 	template <typename State>
 	class StateTransitionManager {
 	public:
-		void setStartState(State _start) {
-			start = _start;
-		}
-		void setStopState(State _stop) {
-			stop = _stop;
-		}
-
-		void goToEnd() {
-			State current;
+		std::vector<State> getShortestSolution(State _start, State _stop) {
+			State current = _start;
 			std::queue<std::pair<State, unsigned>> open;
 			std::unordered_map<State, unsigned> seenCost;
+			std::unordered_map<State, std::pair<State, unsigned>> cameFrom;
 			seenCost[current] = 0;
 			unsigned cost = 0;
 
 			open.push(std::make_pair(current, 0));
+			cameFrom[_start] = std::make_pair(_start, 0);
 
 			while (!open.empty()) {
 				auto next = open.front();
@@ -37,30 +32,35 @@ namespace core {
 
 				for (const auto& n : current.enumerate()) {
 					if (n.valid()) {
+						auto nextCost = cost + current.cost(n);
 						if (seenCost.find(n) == seenCost.end()) {
 							// We have not seen it before
-							open.push(std::make_pair(n, cost + current.cost(n)));
+							open.push(std::make_pair(n, nextCost));
+							cameFrom[n] = std::make_pair(current, nextCost);
 						} else {
 							// maybe its cheaper
-							if (seenCost[n] > cost + current.cost(n)) {
-								open.push(std::make_pair(n, cost + current.cost(n)));
+							if (seenCost[n] > nextCost) {
+								open.push(std::make_pair(n, nextCost));
+								cameFrom[n] = std::make_pair(current, nextCost);
 							}
 						}
 					}
 				}
 			}
 
-			if (seenCost.find(stop) != seenCost.end()) {
-				std::cout << "Found " << stop.str() << ", costs: " << seenCost[stop] << std::endl;
-			} else {
-				std::cout << "Never found the end" << std::endl;
-			}
+			if (seenCost.find(_stop) != seenCost.end()) {
+				std::vector<State> path;
+				State pathState = _stop;
+				while (pathState != _start) {
+					path.push_back(pathState);
+					pathState = cameFrom[pathState].first;
+				}
+				path.push_back(pathState);
+				std::reverse(path.begin(), path.end());
+				return path;
+			} 
+			return {};
 		}
-
-
-	private:
-		State start;
-		State stop;
 	};
 
 }

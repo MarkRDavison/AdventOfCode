@@ -1,6 +1,7 @@
 #include <2019/Day20Puzzle.hpp>
 #include <Core/StringExtensions.hpp>
 #include <Core/Region.hpp>
+#include <Core/Pathfinding.hpp>
 #include <Core/Vector2.hpp>
 #include <cassert>
 #include <unordered_set>
@@ -9,16 +10,49 @@
 #include <queue>
 #include <algorithm>
 
+
+
 namespace TwentyNineteen {
+
+	struct PositionWithDepth {
+		core::Vector2i position;
+		int depth;
+
+		bool operator==(const PositionWithDepth& _other) const {
+			return
+				position == _other.position &&
+				depth == _other.depth;
+		}
+
+		bool operator!=(const PositionWithDepth& _other) const {
+			return !(*this == _other);
+		}
+	};
+
+	struct PositionWithDepthHashStruct {
+		std::size_t operator()(const PositionWithDepth& _obj) const {
+			return std::hash<int>()(_obj.position.x) ^ std::hash<int>()(_obj.position.y) ^ std::hash<int>()(_obj.depth);
+		}
+	};
 
 	struct DonutCell {
 		char c;
-		std::vector<core::Vector2i> adjacentLocations;
 		char portal{ 0 };
 		std::pair<char, char> portalKey;
 	};
 
+	bool isOnOuterEdge(int width, int height, core::Vector2i _position) {
+		if (_position.x == 0 ||
+			_position.y == 0 ||
+			_position.x == width - 1 ||
+			_position.y == height - 1) {
+			return true;
+		}
+		return false;
+	}
+
 	using PortalLocations = std::map<std::pair<char, char>, std::unordered_set<core::Vector2i, core::vector2_hash_fxn>>;
+	using DonutMap = std::vector<std::vector<DonutCell>>;
 
 	Day20Puzzle::Day20Puzzle() :
 		core::PuzzleBase("Donut Maze", 2019, 20) {
@@ -37,15 +71,12 @@ namespace TwentyNineteen {
 		m_InputLines = std::vector<std::string>(_inputLines);
 	}
 
-	void dump(const std::vector<std::vector<DonutCell>>& _map, PortalLocations& _portals, std::unordered_set<core::Vector2i, core::vector2_hash_fxn>& _path) {
+	void dump(const std::vector<std::vector<DonutCell>>& _map, PortalLocations& _portals) {
 
 		for (unsigned y = 0; y < _map.size(); ++y) {
 			for (unsigned x = 0; x < _map[y].size(); ++x) {
 				const DonutCell& cell = _map[y][x];
-				if (_path.count(core::Vector2i((int)x, (int)y)) > 0) {
-					std::cout << '*';
-				}
-				else if (cell.portal != 0) {
+				if (cell.portal != 0) {
 					std::cout << cell.portal;
 				}
 				else {
@@ -63,33 +94,33 @@ namespace TwentyNineteen {
 		return std::make_pair(std::min(_1, _2), std::max(_1, _2));
 	}
 
-	std::vector<core::Vector2i> enumerate(core::Vector2i _current, const std::vector<std::vector<DonutCell>>& _map, PortalLocations& _portals) {
-		std::vector<core::Vector2i> possible;
+	std::vector<PositionWithDepth> enumerate(core::Vector2i _current, const std::vector<std::vector<DonutCell>>& _map, PortalLocations& _portals, int _depth, int _depthIncrement) {
+		std::vector<PositionWithDepth> possible;
 
 		const auto& currentCell = _map[_current.y][_current.x];
 
 		if (_current.y != 0) {
 			const auto& cell = _map[_current.y - 1][_current.x];
 			if (cell.c == '.') {
-				possible.push_back({ _current.x, _current.y - 1 });
+				possible.push_back({ { _current.x, _current.y - 1 }, _depth });
 			}
 		}
 		if (_current.y < _map.size() - 1) {
 			const auto& cell = _map[_current.y + 1][_current.x];
 			if (cell.c == '.') {
-				possible.push_back({ _current.x, _current.y + 1 });
+				possible.push_back({{ _current.x, _current.y + 1 }, _depth });
 			}
 		}
 		if (_current.x != 0) {
 			const auto& cell = _map[_current.y][_current.x - 1];
 			if (cell.c == '.') {
-				possible.push_back({ _current.x - 1, _current.y });
+				possible.push_back({{ _current.x - 1, _current.y }, _depth });
 			}
 		}
 		if (_current.x  < _map[0].size() - 1) {
 			const auto& cell = _map[_current.y][_current.x + 1];
 			if (cell.c == '.') {
-				possible.push_back({ _current.x + 1, _current.y });
+				possible.push_back({ { _current.x + 1, _current.y }, _depth });
 			}
 		}
 
@@ -97,7 +128,26 @@ namespace TwentyNineteen {
 			const auto& portalLocInfo = _portals[currentCell.portalKey];
 			for (const auto& portalEndPoint : portalLocInfo) {
 				if (portalEndPoint != _current) {
-					possible.push_back(portalEndPoint);
+					int newDepth = _depth;
+					if (_depth == 0) {
+						if (currentCell.portalKey == std::make_pair('A', 'A') ||
+							currentCell.portalKey == std::make_pair('Z', 'Z')) {
+							// Entrance/Exit on recursive maps don't exist
+							continue;
+						}
+						else if (isOnOuterEdge(_map[0].size(), _map.size(), _current)) {
+							if (_depthIncrement != 0) {
+								// We are at an outer portal, with part 2 mode, so they are walls, only A/Z allow exiting
+								continue;
+							}
+						}
+					}
+					if (isOnOuterEdge(_map[0].size(), _map.size(), _current)) {
+						newDepth -= _depthIncrement;
+					} else {
+						newDepth += _depthIncrement;
+					}
+					possible.push_back({ portalEndPoint, newDepth });
 				}
 			}			
 		}
@@ -105,14 +155,68 @@ namespace TwentyNineteen {
 		return possible;
 	}
 
-	std::pair<std::string, std::string> Day20Puzzle::fastSolve() {
+	unsigned findExitPathLength(const DonutMap& _map, PortalLocations& _portals, bool _recursive) {
+		int depthIncrement = _recursive ? 1 : 0;
+		assert(_portals[makePortalPair('A', 'A')].size() == 1);
+		PositionWithDepth start = { *_portals[makePortalPair('A', 'A')].begin(), 0 };
+		assert(_portals[makePortalPair('Z', 'Z')].size() == 1);
+		PositionWithDepth finish = { *_portals[makePortalPair('Z', 'Z')].begin(),0 };
 
-		std::vector<std::vector<DonutCell>> map;
-		std::map<char, std::vector<char>> availablePortals;
-		PortalLocations portalLocations;
+		PositionWithDepth current = start;
+		internal::PriorityQueue<std::pair<PositionWithDepth, int>, int> openPriority;
 
-		unsigned totalHeight = m_InputLines.size();
-		unsigned totalWidth = m_InputLines[0].size();
+		std::unordered_map<PositionWithDepth, int, PositionWithDepthHashStruct> seenCost;
+		std::unordered_map<PositionWithDepth, std::pair<PositionWithDepth, int>, PositionWithDepthHashStruct> cameFrom;
+		seenCost[current] = 0;
+		cameFrom[current] = std::make_pair(current, 0);
+		openPriority.put(std::make_pair(current, 0), 0);
+
+		int maxDepth = 0;
+		int cost = 0;
+		while (!openPriority.empty()) {
+
+			auto next = openPriority.get();
+
+			cost = next.second;
+			current = next.first;
+			seenCost[current] = cost;
+
+			if (current == finish) {
+				break;
+			}
+
+			for (const auto& n : enumerate(current.position, _map, _portals, current.depth, depthIncrement)) {
+				auto nextCost = cost + 1;
+				if (seenCost.find(n) == seenCost.end()) {
+					// Brand new
+					openPriority.put(std::make_pair(n, nextCost), n.depth);
+					cameFrom[n] = std::make_pair(current, nextCost);
+				} else {
+					// Seen it before
+					if (seenCost[n] > nextCost) {
+						// Its better though
+						openPriority.put(std::make_pair(n, nextCost), n.depth);
+						cameFrom[n] = std::make_pair(current, nextCost);
+					}
+				}
+			}
+		}
+
+		std::vector<PositionWithDepth> path;
+		PositionWithDepth currentPathNode = finish;
+		while (currentPathNode != start) {
+			path.push_back(currentPathNode);
+			currentPathNode = cameFrom[currentPathNode].first;
+		}
+		path.push_back(start);
+
+		return path.size() - 1;
+	}
+
+	void parseInput(TwentyNineteen::DonutMap& map, TwentyNineteen::PortalLocations& portalLocations, const std::vector<std::string>& _input) {
+
+		unsigned totalHeight = _input.size();
+		unsigned totalWidth = _input[0].size();
 
 		core::Vector2i topLeftInterna{ -1,-1 };
 		core::Vector2i bottomRightInternal{ -1,-1 };
@@ -125,7 +229,7 @@ namespace TwentyNineteen {
 			}
 			for (unsigned x = 0; x < totalWidth; ++x) {
 				bool xValid = x >= 2 && x < totalWidth - 2;
-				char value = m_InputLines[y][x];
+				char value = _input[y][x];
 				int mapX = x - 2;
 				int mapY = y - 2;
 				if (value == ' ') {
@@ -148,24 +252,24 @@ namespace TwentyNineteen {
 					}
 				}
 				if (y == 2 && x >= 2 && x < totalWidth - 2) {
-					char adj1 = m_InputLines[y - 1][x];
-					char adj2 = m_InputLines[y - 2][x];
+					char adj1 = _input[y - 1][x];
+					char adj2 = _input[y - 2][x];
 					if ('A' <= adj1 && adj1 <= 'Z' &&
 						'A' <= adj2 && adj2 <= 'Z') {
 						portalLocations[makePortalPair(adj1, adj2)].insert(core::Vector2i(mapX, mapY));
 					}
-				} 
+				}
 				if (x == 2 && y >= 2 && y < totalHeight - 2) {
-					char adj1 = m_InputLines[y][x - 1];
-					char adj2 = m_InputLines[y][x - 2];
+					char adj1 = _input[y][x - 1];
+					char adj2 = _input[y][x - 2];
 					if ('A' <= adj1 && adj1 <= 'Z' &&
 						'A' <= adj2 && adj2 <= 'Z') {
 						portalLocations[makePortalPair(adj1, adj2)].insert(core::Vector2i(mapX, mapY));
 					}
 				}
 				if (x == totalWidth - 3 && y >= 2 && y < totalHeight - 2) {
-					char adj1 = m_InputLines[y][x + 1];
-					char adj2 = m_InputLines[y][x + 2];
+					char adj1 = _input[y][x + 1];
+					char adj2 = _input[y][x + 2];
 					if ('A' <= adj1 && adj1 <= 'Z' &&
 						'A' <= adj2 && adj2 <= 'Z') {
 						portalLocations[makePortalPair(adj1, adj2)].insert(core::Vector2i(mapX, mapY));
@@ -173,8 +277,8 @@ namespace TwentyNineteen {
 
 				}
 				if (y == totalHeight - 3 && x >= 2 && x < totalWidth - 2) {
-					char adj1 = m_InputLines[y + 1][x];
-					char adj2 = m_InputLines[y + 2][x];
+					char adj1 = _input[y + 1][x];
+					char adj2 = _input[y + 2][x];
 					if ('A' <= adj1 && adj1 <= 'Z' &&
 						'A' <= adj2 && adj2 <= 'Z') {
 						portalLocations[makePortalPair(adj1, adj2)].insert(core::Vector2i(mapX, mapY));
@@ -184,41 +288,37 @@ namespace TwentyNineteen {
 				if (yValid && xValid &&
 					topLeftInterna.x <= mapX &&
 					topLeftInterna.y <= mapY) {
-					
-					if (mapY == topLeftInterna.y && m_InputLines[y-1][x] != ' ') {
-						char adj1 = m_InputLines[y + 0][x];
-						char adj2 = m_InputLines[y + 1][x];
+
+					if (mapY == topLeftInterna.y && _input[y - 1][x] != ' ') {
+						char adj1 = _input[y + 0][x];
+						char adj2 = _input[y + 1][x];
 						if ('A' <= adj1 && adj1 <= 'Z' &&
 							'A' <= adj2 && adj2 <= 'Z') {
 							portalLocations[makePortalPair(adj1, adj2)].insert(core::Vector2i(mapX, mapY - 1));
-							std::cout << "Internal portal = North Internal: " << adj1 << " - " << adj2 << " at " << mapX << "," << mapY - 1 << std::endl;
 						}
 					}
-					if (mapY == bottomRightInternal.y && m_InputLines[y + 1][x] != ' ') {
-						char adj1 = m_InputLines[y + 0][x];
-						char adj2 = m_InputLines[y - 1][x];
+					if (mapY == bottomRightInternal.y && _input[y + 1][x] != ' ') {
+						char adj1 = _input[y + 0][x];
+						char adj2 = _input[y - 1][x];
 						if ('A' <= adj1 && adj1 <= 'Z' &&
 							'A' <= adj2 && adj2 <= 'Z') {
 							portalLocations[makePortalPair(adj1, adj2)].insert(core::Vector2i(mapX, mapY + 1));
-							std::cout << "Internal portal = South Internal: " << adj1 << " - " << adj2 << " at " << mapX << "," << mapY + 1 << std::endl;
 						}
 					}
-					if (mapX == topLeftInterna.x && m_InputLines[y][x - 1] != ' ') {
-						char adj1 = m_InputLines[y][x + 0];
-						char adj2 = m_InputLines[y][x + 1];
+					if (mapX == topLeftInterna.x && _input[y][x - 1] != ' ') {
+						char adj1 = _input[y][x + 0];
+						char adj2 = _input[y][x + 1];
 						if ('A' <= adj1 && adj1 <= 'Z' &&
 							'A' <= adj2 && adj2 <= 'Z') {
 							portalLocations[makePortalPair(adj1, adj2)].insert(core::Vector2i(mapX - 1, mapY));
-							std::cout << "Internal portal = West Internal: " << adj1 << " - " << adj2 << " at " << mapX - 1 << "," << mapY << std::endl;
 						}
 					}
-					if (mapY == bottomRightInternal.y && m_InputLines[y][x + 1] != ' ') {
-						char adj1 = m_InputLines[y][x + 0];
-						char adj2 = m_InputLines[y][x - 1];
+					if (mapY == bottomRightInternal.y && _input[y][x + 1] != ' ') {
+						char adj1 = _input[y][x + 0];
+						char adj2 = _input[y][x - 1];
 						if ('A' <= adj1 && adj1 <= 'Z' &&
 							'A' <= adj2 && adj2 <= 'Z') {
 							portalLocations[makePortalPair(adj1, adj2)].insert(core::Vector2i(mapX + 1, mapY));
-							std::cout << "Internal portal = East Internal: " << adj1 << " - " << adj2 << " at " << mapX + 1 << "," << mapY<< std::endl;
 						}
 					}
 				}
@@ -231,61 +331,21 @@ namespace TwentyNineteen {
 				map[coord.y][coord.x].portalKey = portal.first;
 			}
 		}
+	}
 
-		std::unordered_set<core::Vector2i, core::vector2_hash_fxn> pathSet;
-		dump(map, portalLocations, pathSet);
+	std::pair<std::string, std::string> Day20Puzzle::fastSolve() {		
+		DonutMap map;
+		PortalLocations portalLocations;
 
-		assert(portalLocations[makePortalPair('A', 'A')].size() == 1);
-		core::Vector2i start = *portalLocations[makePortalPair('A', 'A')].begin();
-		assert(portalLocations[makePortalPair('Z', 'Z')].size() == 1);
-		core::Vector2i finish = *portalLocations[makePortalPair('Z', 'Z')].begin();
-		
-		core::Vector2i current = start;
-		std::queue<std::pair<core::Vector2i, int>> open;
-		std::unordered_map<core::Vector2i, int, core::vector2_hash_fxn> seenCost;
-		std::unordered_map<core::Vector2i, std::pair<core::Vector2i, int>, core::vector2_hash_fxn> cameFrom;
-		seenCost[start] = 0;
-		cameFrom[start] = std::make_pair(start, 0);
-		open.push(std::make_pair(start, 0));
-		int cost = 0;
-		while (!open.empty()) {
-			auto next = open.front();
-			open.pop();
+		parseInput(map, portalLocations, m_InputLines);
 
-			cost = next.second;
-			current = next.first;
-			seenCost[current] = cost;
-
-			for (const auto& n : enumerate(current, map, portalLocations)) {
-				auto nextCost = cost + 1;
-				if (seenCost.find(n) == seenCost.end()) {
-					// Brand new
-					open.push(std::make_pair(n, nextCost));
-					cameFrom[n] = std::make_pair(current, nextCost);
-				} else {
-					// Seen it before
-					if (seenCost[n] > nextCost) {
-						// Its better though
-						open.push(std::make_pair(n, nextCost));
-						cameFrom[n] = std::make_pair(current, nextCost);
-					}
-				}
-			}
+		if (getVerbose()) {
+			dump(map, portalLocations);
 		}
 
-		std::vector<core::Vector2i> path;
-		core::Vector2i currentPathNode = finish;
-		while (currentPathNode != start) {
-			path.push_back(currentPathNode);
-			pathSet.insert(currentPathNode);
-			currentPathNode = cameFrom[currentPathNode].first;
-		}
-		pathSet.insert(start);
-		path.push_back(start);
-		std::reverse(path.begin(), path.end());
-		dump(map, portalLocations, pathSet);
+		auto part1 = findExitPathLength(map, portalLocations, false);
+		auto part2 = findExitPathLength(map, portalLocations, true);
 
-		std::cout << "PART 1: " << path.size() - 1 << std::endl;
-		return { std::to_string(path.size() - 1), "Part 2" };
+		return { std::to_string(part1), std::to_string(part2) };
 	}
 }

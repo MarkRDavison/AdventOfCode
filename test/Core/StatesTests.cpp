@@ -141,6 +141,103 @@ struct MCState {
 	inline bool operator!=(const MCState& _other) const {
 		return !((*this) == _other);
 	}
+
+};
+
+// Farmer Fox Chicken Grain State
+struct FFCGState {
+
+	enum class Side {
+		Left = 0,
+		Right = 1
+	};
+
+	FFCGState() {}
+	FFCGState(Side _farmer, Side _fox, Side _chicken, Side _grain) :
+		farmer(_farmer),
+		fox(_fox),
+		chicken(_chicken),
+		grain(_grain) { }
+
+	Side farmer{ Side::Left };
+	Side fox{ Side::Left };
+	Side chicken{ Side::Left };
+	Side grain{ Side::Left };
+
+	std::vector<FFCGState> enumerate() const {
+		std::vector<FFCGState> available;
+
+		if (farmer == Side::Left) {
+			available.push_back(FFCGState(Side::Right, fox, chicken, grain));
+
+			if (fox == Side::Left) {
+				available.push_back(FFCGState(Side::Right, Side::Right, chicken, grain));
+			}
+			if (chicken == Side::Left) {
+				available.push_back(FFCGState(Side::Right, fox, Side::Right, grain));
+			}
+			if (grain == Side::Left) {
+				available.push_back(FFCGState(Side::Right, fox, chicken, Side::Right));
+			}
+		} else {
+			available.push_back(FFCGState(Side::Left, fox, chicken, grain));
+
+			if (fox == Side::Right) {
+				available.push_back(FFCGState(Side::Left, Side::Left, chicken, grain));
+			}
+			if (chicken == Side::Right) {
+				available.push_back(FFCGState(Side::Left, fox, Side::Left, grain));
+			}
+			if (grain == Side::Right) {
+				available.push_back(FFCGState(Side::Left, fox, chicken, Side::Left));
+			}
+		}
+
+		return available;
+	}
+
+	std::string str() const {
+		std::stringstream ss;
+
+		ss 
+			<< (farmer == Side::Left ? "F" : " ") << " "
+			<< (fox == Side::Left ? "f" : " ") << " "
+			<< (chicken == Side::Left ? "c" : " ") << " "
+			<< (grain == Side::Left ? "g" : " ")
+			<< "  ~~~~~  "
+			<< (farmer == Side::Right ? "F" : " ") << " "
+			<< (fox == Side::Right ? "f" : " ") << " "
+			<< (chicken == Side::Right ? "c" : " ") << " "
+			<< (grain == Side::Right ? "g" : " ");
+
+		return ss.str();
+	}
+
+	unsigned cost(const FFCGState& _targetState) const {
+		return 1;
+	}
+
+	bool valid() const {
+		if (chicken == grain && chicken != farmer) {
+			return false;
+		}
+		if (fox == chicken && fox != farmer) {
+			return false;
+		}
+		return true;
+	}
+
+	inline bool operator==(const FFCGState& _other) const {
+		return
+			farmer   == _other.farmer &&
+			fox      == _other.fox &&
+			chicken  == _other.chicken &&
+			grain    == _other.grain;
+	}
+
+	inline bool operator!=(const FFCGState& _other) const {
+		return !(*this == _other);
+	}
 };
 
 namespace std {
@@ -156,13 +253,23 @@ namespace std {
 			return std::hash<std::string>()(obj.str());
 		}
 	};
+	template<>
+	struct hash<FFCGState> {
+		size_t operator()(const FFCGState& obj) const {
+			return std::hash<std::string>()(obj.str());
+		}
+	};
 }
 namespace core {
 
 	TEST_CASE("Test finding the shortest path for 0-10 +1 int state range", "[Core][States]") {
 
 		StateTransitionManager<TestState> stm;
-		stm.getShortestSolution(TestState{ 0 }, TestState{ 10 });
+		const auto& path = stm.getShortestSolution(TestState{ 0 }, TestState{ 10 });
+		REQUIRE_FALSE(path.empty());
+		REQUIRE(10 == path.size() - 1);
+		REQUIRE(TestState{ 0 }.str() == path.front().str());
+		REQUIRE(TestState{ 10 }.str() == path.back().str());
 	}
 
 
@@ -176,12 +283,21 @@ namespace core {
 
 		const auto& path = stm.getShortestSolution(start, end);
 		REQUIRE_FALSE(path.empty());
-		REQUIRE(12 == path.size());
+		REQUIRE(11 == path.size() - 1);
 		REQUIRE(start.str() == path.front().str());
 		REQUIRE(end.str() == path.back().str());
-		for (const auto& p : path) {
-			std::cout << p.str() << std::endl;
-		}
+	}
+
+	TEST_CASE("Farmer, Fox, Chicken and Grain", "[Core][States]") {
+		StateTransitionManager<FFCGState> stm;
+		FFCGState start(FFCGState::Side::Left, FFCGState::Side::Left, FFCGState::Side::Left, FFCGState::Side::Left);
+		FFCGState end(FFCGState::Side::Right, FFCGState::Side::Right, FFCGState::Side::Right, FFCGState::Side::Right);
+		
+		const auto& path = stm.getShortestSolution(start, end);
+ 		REQUIRE_FALSE(path.empty());
+		REQUIRE(7 == path.size() - 1);
+		REQUIRE(start.str() == path.front().str());
+		REQUIRE(end.str() == path.back().str());
 	}
 
 }

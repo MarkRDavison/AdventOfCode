@@ -14,6 +14,9 @@ namespace TwentyNineteen {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		int solve(const std::vector<std::string>& _inputLines, char _robot);
+		int solvePart2(const std::vector<std::string>& _inputLines);
+
 	private:
 		std::vector<std::string> m_InputLines;
 	};

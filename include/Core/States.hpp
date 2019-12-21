@@ -15,7 +15,7 @@ namespace core {
 	class StateTransitionManager {
 	public:
 		StateTransitionManager(const StateInfo& _info)
-			:m_StateInfo(_info) {
+			: m_StateInfo(_info) {
 		}
 
 		template<typename SeenCostHash>

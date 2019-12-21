@@ -152,7 +152,8 @@ namespace TwentyNineteen {
 			cell.type = Type::Wall;
 		} else if (result == STATUS_MOVE) {
 			cell.type = Type::Vacant;
-			assert(STATUS_MOVE == getResponse(_droid, getOppositeInput(_input)));
+			auto response = getResponse(_droid, getOppositeInput(_input));
+			assert(STATUS_MOVE == response);
 		} else {
 			cell.type = Type::Oxygen;
 			cell.cost = _region.getCell(_droid->position.x, _droid->position.y).cost + 1;

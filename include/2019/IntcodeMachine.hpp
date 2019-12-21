@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <queue>
+#include <map>
 
 namespace TwentyNineteen {
 
@@ -12,7 +13,6 @@ namespace TwentyNineteen {
 	class IntcodeMachine {
 	public:
 		IntcodeMachine();
-		//IntcodeMachine(const IntcodeMachine& _copy);
 
 		void loadProgram(const std::string& _program);
 		void resetProgram();
@@ -48,6 +48,7 @@ namespace TwentyNineteen {
 		std::vector<IntcodeValue> m_Memory;
 
 		std::queue<IntcodeValue> m_Input;
+		std::map<unsigned, IntcodeValue> m_ExcessMemory;
 
 		IntcodeValue m_Output{ 0 };
 		bool m_OutputRetrieved{ false };

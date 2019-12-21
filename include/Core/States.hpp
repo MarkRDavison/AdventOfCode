@@ -3,16 +3,96 @@
 
 #include <unordered_map>
 #include <unordered_set>
+#include <functional>
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <Core/Pathfinding.hpp>
 
 namespace core {
 
-	template <typename State>
+	template <typename State, typename StateInfo>
 	class StateTransitionManager {
 	public:
-		std::vector<State> getShortestSolution(State _start, State _stop) {
+		StateTransitionManager(const StateInfo& _info)
+			:m_StateInfo(_info) {
+		}
+
+		template<typename SeenCostHash>
+		unsigned getShortestSolutionForStateByPredicate(State _start, std::function<bool(const State& _state)> _pred) {
+			State current = _start;
+			//std::queue<std::pair<State, unsigned>> open;
+			internal::PriorityQueue< std::pair<State, unsigned>, unsigned> open;
+			std::unordered_map<State, unsigned, SeenCostHash> seenCost;
+			std::unordered_map<State, std::pair<State, unsigned>> cameFrom;
+			seenCost[current] = 0;
+			unsigned cost = 0;
+
+			std::unordered_map<State, unsigned> predicateStates;
+
+			//open.push(std::make_pair(current, 0));
+			open.put(std::make_pair(current, 0), 0);
+			cameFrom[_start] = std::make_pair(_start, 0);
+			long i = 0;
+			unsigned minimumCurrentCost = std::numeric_limits<unsigned>::max();
+			while (!open.empty()) {
+				i++;
+				auto next = open.get();
+				//open.pop();
+				cost = next.second;
+				current = next.first;
+				seenCost[current] = cost;
+				//if (i  > 100) {
+				//	std::cout << "QUEUE: " << open.elements.size()
+				//		<< " - cost: " << cost
+				//		<< " - " << current.str() << std::endl;
+				//	i = 0;
+				//}
+				if (_pred(current)) {
+					if (minimumCurrentCost > cost) {
+						minimumCurrentCost = cost;
+						std::cout << "Predicate state: " << current.str() << " at " << cost << std::endl;
+					}
+				}
+
+				for (const auto& n : current.enumerate(m_StateInfo)) {
+					if (n.valid(m_StateInfo)) {
+						auto nextCost = cost + current.cost(n, m_StateInfo);
+						if (nextCost > minimumCurrentCost) {
+							//std::cout << "Throwing away" << std::endl;
+							continue;
+						}
+						if (seenCost.find(n) == seenCost.end()) {
+							// We have not seen it before
+							//open.push(std::make_pair(n, nextCost));
+							open.put(std::make_pair(n, nextCost), n.priority(m_StateInfo));
+							cameFrom[n] = std::make_pair(current, nextCost);
+						} else {
+							std::cout << "Already seen" << std::endl;
+							// maybe its cheaper
+							if (seenCost[n] > nextCost) {
+								//open.push(std::make_pair(n, nextCost));
+								open.put(std::make_pair(n, nextCost), n.priority(m_StateInfo));
+								cameFrom[n] = std::make_pair(current, nextCost);
+							}
+						}
+					}
+				}
+			}
+
+			State bestState = _start;
+			unsigned minCost = std::numeric_limits<unsigned>::max();
+			for (const auto& [state, cost] : predicateStates) {
+				if (minCost > cost) {
+					minCost = cost;
+					bestState = state;
+				}
+			}
+
+			return minCost;
+		}
+
+		std::unordered_map<State, std::pair<State, unsigned>> getBreadthFirstExploredStateSpace(State _start) {
 			State current = _start;
 			std::queue<std::pair<State, unsigned>> open;
 			std::unordered_map<State, unsigned> seenCost;
@@ -30,9 +110,9 @@ namespace core {
 				current = next.first;
 				seenCost[current] = cost;
 
-				for (const auto& n : current.enumerate()) {
-					if (n.valid()) {
-						auto nextCost = cost + current.cost(n);
+				for (const auto& n : current.enumerate(m_StateInfo)) {
+					if (n.valid(m_StateInfo)) {
+						auto nextCost = cost + current.cost(n, m_StateInfo);
 						if (seenCost.find(n) == seenCost.end()) {
 							// We have not seen it before
 							open.push(std::make_pair(n, nextCost));
@@ -48,7 +128,13 @@ namespace core {
 				}
 			}
 
-			if (seenCost.find(_stop) != seenCost.end()) {
+			return cameFrom;
+		}
+
+		std::vector<State> getShortestSolution(State _start, State _stop) {
+			auto cameFrom = getBreadthFirstExploredStateSpace(_start);
+
+			if (cameFrom.find(_stop) != cameFrom.end()) {
 				std::vector<State> path;
 				State pathState = _stop;
 				while (pathState != _start) {
@@ -61,6 +147,9 @@ namespace core {
 			} 
 			return {};
 		}
+
+	private:
+		const StateInfo& m_StateInfo;
 	};
 
 }

@@ -62,7 +62,7 @@ namespace core {
 		if (leaf) {
 			std::cout << "I (" << _node << ") am a leaf, cost " << _cost << std::endl;
 		}
-		
+
 		//_visited.insert(_node);
 		//bool wentToChild = false;
 		//for (const auto& n : _graph.neighbours(_node)) {

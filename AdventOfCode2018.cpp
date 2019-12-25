@@ -1,6 +1,7 @@
 #include <Core/PuzzleConstructor.hpp>
 
 #include <iostream>
+#include <chrono>
 
 #include <2018/Day01Puzzle.hpp>
 #include <2018/Day02Puzzle.hpp>
@@ -62,12 +63,15 @@ int main(int _argc, char **_argv) {
 		return EXIT_FAILURE;
 	}
 
+	auto start = std::chrono::high_resolution_clock::now();
 	std::cout << "Puzzle " << puzzle->getPuzzleYear() << " - Day " << puzzle->getPuzzleDay() << " - " << puzzle->getPuzzleName() << std::endl;
 
 	const std::pair<std::string, std::string>& solution = puzzle->fastSolve();
 
 	std::cout << "Part 1: " << solution.first << std::endl << "Part 2: " << solution.second << std::endl;
 
+	auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();   std::cout << "In " << microseconds << "ms." << std::endl;
 	delete puzzle;
 
 	return EXIT_SUCCESS;

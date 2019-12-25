@@ -4,23 +4,20 @@
 namespace TwentyFifteen {
 
 	TEST_CASE("Day 1 Part 1 Example work", "[2015][Day01]") {
-	    const std::vector<std::string> input = {};
-
-	    Day01Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+		REQUIRE(+0 == Day01Puzzle::doPart1("(())"));
+		REQUIRE(+0 == Day01Puzzle::doPart1("()()"));
+		REQUIRE(+3 == Day01Puzzle::doPart1("((("));
+		REQUIRE(+3 == Day01Puzzle::doPart1("(()(()("));
+		REQUIRE(+3 == Day01Puzzle::doPart1("))((((("));
+		REQUIRE(-1 == Day01Puzzle::doPart1("())"));
+		REQUIRE(-1 == Day01Puzzle::doPart1("))("));
+		REQUIRE(-3 == Day01Puzzle::doPart1(")))"));
+		REQUIRE(-3 == Day01Puzzle::doPart1(")())())"));
 	}
 
 	TEST_CASE("Day 1 Part 2 Example work", "[2015][Day01]") {
-	    const std::vector<std::string> input = {};
-
-	    Day01Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+		REQUIRE(1 == Day01Puzzle::doPart2(")"));
+		REQUIRE(5 == Day01Puzzle::doPart2("()())"));
 	}
 
 }

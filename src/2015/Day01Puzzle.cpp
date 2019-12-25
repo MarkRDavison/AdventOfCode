@@ -4,7 +4,7 @@
 namespace TwentyFifteen {
 	
 	Day01Puzzle::Day01Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2015, 1) {
+		core::PuzzleBase("Not Quite Lisp", 2015, 1) {
 
 	}
 	Day01Puzzle::~Day01Puzzle() {
@@ -20,7 +20,34 @@ namespace TwentyFifteen {
 		m_InputLines = std::vector<std::string>(_inputLines);
 	}
 
+	unsigned Day01Puzzle::doPart1(const std::string& _input) {
+		unsigned floor = 0;
+		for (char c : _input) {
+			if (c == '(') {
+				floor++;
+			} else {
+				floor--;
+			}
+		}
+		return floor;
+	}
+	unsigned Day01Puzzle::doPart2(const std::string& _input) {
+		unsigned index = 0;
+		unsigned floor = 0;
+		for (char c : _input) {
+			index++;
+			if (c == '(') {
+				floor++;
+			} else {
+				floor--;
+			}
+			if (floor == -1) {
+				break;
+			}
+		}
+		return index;
+	}
 	std::pair<std::string, std::string> Day01Puzzle::fastSolve() {
-		return { "Part 1", "Part 2" };
+		return { std::to_string(doPart1(m_InputLines[0])), std::to_string(doPart2(m_InputLines[0])) };
 	}
 }

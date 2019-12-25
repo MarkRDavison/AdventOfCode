@@ -1,7 +1,6 @@
 #include <Core/PuzzleConstructor.hpp>
 
 #include <iostream>
-#include <chrono>
 
 #include <2018/Day01Puzzle.hpp>
 #include <2018/Day02Puzzle.hpp>
@@ -31,33 +30,31 @@
 
 int main(int _argc, char **_argv) {
 
-	{	// Register Puzzles
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day01Puzzle>( 1);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day02Puzzle>( 2);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day03Puzzle>( 3);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day04Puzzle>( 4);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day05Puzzle>( 5);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day06Puzzle>( 6);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day07Puzzle>( 7);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day08Puzzle>( 8);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day09Puzzle>( 9);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day10Puzzle>(10);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day11Puzzle>(11);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day12Puzzle>(12);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day13Puzzle>(13);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day14Puzzle>(14);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day15Puzzle>(15);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day16Puzzle>(16);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day17Puzzle>(17);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day18Puzzle>(18);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day19Puzzle>(19);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day20Puzzle>(20);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day21Puzzle>(21);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day22Puzzle>(22);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day23Puzzle>(23);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day24Puzzle>(24);
-		core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day25Puzzle>(25);
-	}
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day01Puzzle>( 1);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day02Puzzle>( 2);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day03Puzzle>( 3);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day04Puzzle>( 4);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day05Puzzle>( 5);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day06Puzzle>( 6);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day07Puzzle>( 7);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day08Puzzle>( 8);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day09Puzzle>( 9);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day10Puzzle>(10);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day11Puzzle>(11);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day12Puzzle>(12);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day13Puzzle>(13);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day14Puzzle>(14);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day15Puzzle>(15);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day16Puzzle>(16);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day17Puzzle>(17);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day18Puzzle>(18);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day19Puzzle>(19);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day20Puzzle>(20);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day21Puzzle>(21);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day22Puzzle>(22);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day23Puzzle>(23);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day24Puzzle>(24);
+    core::PuzzleConstructor::registerPuzzle<TwentyEighteen::Day25Puzzle>(25);
 
 	core::IPuzzleBase *puzzle = core::PuzzleConstructor::createPuzzle(core::InitialisationInfo::parseArguments(_argc, _argv));
 
@@ -67,17 +64,9 @@ int main(int _argc, char **_argv) {
 
 	std::cout << "Puzzle " << puzzle->getPuzzleYear() << " - Day " << puzzle->getPuzzleDay() << " - " << puzzle->getPuzzleName() << std::endl;
 
-	auto t1 = std::chrono::high_resolution_clock::now();
 	const std::pair<std::string, std::string>& solution = puzzle->fastSolve();
-	auto t2 = std::chrono::high_resolution_clock::now();
 
 	std::cout << "Part 1: " << solution.first << std::endl << "Part 2: " << solution.second << std::endl;
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-	if (duration != 0) {
-		std::cout << "In " << duration << "ms" << std::endl;
-	} else {
-		std::cout << "In " << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() << " micro seconds" << std::endl;
-	}
 
 	delete puzzle;
 

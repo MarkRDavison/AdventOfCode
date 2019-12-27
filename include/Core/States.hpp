@@ -144,8 +144,21 @@ namespace core {
 				path.push_back(pathState);
 				std::reverse(path.begin(), path.end());
 				return path;
-			} 
+			}
 			return {};
+		}
+		unsigned getShortestSolutionLength(State _start, State _stop) {
+			auto cameFrom = getBreadthFirstExploredStateSpace(_start);
+			unsigned length = 0;
+			State pathState = _stop;
+			if (cameFrom.find(_stop) != cameFrom.end()) {
+				while (pathState != _start) {
+					length++;
+					pathState = cameFrom[pathState].first;
+				}
+				length++;
+			}
+			return length;
 		}
 
 	private:

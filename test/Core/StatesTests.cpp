@@ -3,40 +3,6 @@
 
 struct PointlessStateInfo {};
 
-struct TestState {
-	int id{ 0 };
-
-	std::string str() const {
-		return std::to_string(id);
-	}
-
-	std::vector<TestState> enumerate(const PointlessStateInfo& _info) const {
-		std::vector<TestState> available{};
-
-		available.push_back(TestState{ id - 1 });
-		available.push_back(TestState{ id + 1 });
-
-		return available;
-	}
-
-	unsigned cost(const TestState& _targetState) const {
-		return 1;
-	}
-
-	bool valid() const {
-		return id >= 0 && id <= 10;
-	}
-
-	inline bool operator==(const TestState& _other) const {
-		return id == _other.id;
-	}
-
-	inline bool operator!=(const TestState& _other) const {
-		return id != _other.id;
-	}
-
-};
-
 struct MCState {
 
 	MCState() : MCState(-1, -1, -1, -1, false) {}
@@ -120,11 +86,11 @@ struct MCState {
 		return available;
 	}
 
-	unsigned cost(const MCState& _targetState) const {
+	unsigned cost(const MCState& _targetState, const PointlessStateInfo& _info) const {
 		return 1;
 	}
 
-	bool valid() const {
+	bool valid(const PointlessStateInfo& _info) const {
 		return 
 			(mLeft == 0 ||mLeft >= cLeft) &&
 			(mRight == 0 || mRight >= cRight);
@@ -214,11 +180,11 @@ struct FFCGState {
 		return ss.str();
 	}
 
-	unsigned cost(const FFCGState& _targetState) const {
+	unsigned cost(const FFCGState& _targetState, const PointlessStateInfo& _info) const {
 		return 1;
 	}
 
-	bool valid() const {
+	bool valid(const PointlessStateInfo& _info) const {
 		if (chicken == grain && chicken != farmer) {
 			return false;
 		}
@@ -243,12 +209,6 @@ struct FFCGState {
 
 namespace std {
 	template<>
-	struct hash<TestState> {
-		size_t operator()(const TestState& obj) const {
-			return std::hash<int>()(obj.id);
-		}
-	};
-	template<>
 	struct hash<MCState> {
 		size_t operator()(const MCState& obj) const {
 			return std::hash<std::string>()(obj.str());
@@ -262,18 +222,6 @@ namespace std {
 	};
 }
 namespace core {
-	/*
-	TEST_CASE("Test finding the shortest path for 0-10 +1 int state range", "[Core][States]") {
-		PointlessStateInfo info{};
-		StateTransitionManager<TestState, PointlessStateInfo> stm(info);
-		const auto& path = stm.getShortestSolution(TestState{ 0 }, TestState{ 10 });
-		REQUIRE_FALSE(path.empty());
-		REQUIRE(10 == path.size() - 1);
-		REQUIRE(TestState{ 0 }.str() == path.front().str());
-		REQUIRE(TestState{ 10 }.str() == path.back().str());
-	}
-
-
 
 	TEST_CASE("Missionaries & Cannibals", "[Core][States]"){
 		constexpr int amount = 3;
@@ -302,5 +250,5 @@ namespace core {
 		REQUIRE(start.str() == path.front().str());
 		REQUIRE(end.str() == path.back().str());
 	}
-	*/
+
 }

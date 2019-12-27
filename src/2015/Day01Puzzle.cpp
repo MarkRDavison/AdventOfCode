@@ -1,5 +1,7 @@
 #include <2015/Day01Puzzle.hpp>
 #include <Core/StringExtensions.hpp>
+#include <algorithm>
+#include <numeric>
 
 namespace TwentyFifteen {
 	
@@ -20,32 +22,27 @@ namespace TwentyFifteen {
 		m_InputLines = std::vector<std::string>(_inputLines);
 	}
 
-	unsigned Day01Puzzle::doPart1(const std::string& _input) {
-		unsigned floor = 0;
-		for (char c : _input) {
-			if (c == '(') {
-				floor++;
-			} else {
-				floor--;
-			}
-		}
-		return floor;
+	int Day01Puzzle::doPart1(const std::string& _input) {
+		return std::accumulate(_input.begin(), _input.end(), 0, [](int _accumulate, char _c) -> int {
+			return _accumulate + (_c == '(' ? 1 : -1);
+		});
 	}
-	unsigned Day01Puzzle::doPart2(const std::string& _input) {
-		unsigned index = 0;
-		unsigned floor = 0;
-		for (char c : _input) {
-			index++;
-			if (c == '(') {
-				floor++;
-			} else {
-				floor--;
+	int Day01Puzzle::doPart2(const std::string& _input) {
+		int part2 = 0;
+		int location = 0;
+		auto discard = std::accumulate(_input.begin(), _input.end(), 0, [&part2, &location](int _accumulate, char _c) -> int {
+			if (part2 != 0) {
+				return 0;
 			}
-			if (floor == -1) {
-				break;
+			_accumulate += _c == '(' ? 1 : -1;
+			location++;
+			if (_accumulate == -1) {
+				part2 = location;
 			}
-		}
-		return index;
+			return _accumulate;
+		});
+
+		return part2;
 	}
 	std::pair<std::string, std::string> Day01Puzzle::fastSolve() {
 		return { std::to_string(doPart1(m_InputLines[0])), std::to_string(doPart2(m_InputLines[0])) };

@@ -30,7 +30,7 @@ namespace TwentyFifteen {
 	TEST_CASE("2015 Day 6 Part 1 Example work", "[2015][Day06]") {
 		constexpr std::size_t size{ 10 };
 
-		int* grid = new int[size * size]{ 0 };
+		std::vector<int> grid(size * size, 0);
 
 		Day06Puzzle::applyLinePart1<size>(
 			grid,
@@ -48,7 +48,6 @@ namespace TwentyFifteen {
 				setLights += grid[y * size + x];
 			}
 		}
-		delete[]grid;
 
 		REQUIRE(75 == setLights);
 	}
@@ -56,7 +55,7 @@ namespace TwentyFifteen {
 	TEST_CASE("2015 Day 6 Part 2 Example work", "[2015][Day06]") {
 		constexpr std::size_t size{ 10 };
 
-		int* grid = new int[size * size]{ 0 };
+		std::vector<int> grid(size * size, 0);
 
 		Day06Puzzle::applyLinePart2<size>(
 			grid,
@@ -89,7 +88,6 @@ namespace TwentyFifteen {
 				setLights += grid[y * size + x];
 			}
 		}
-		delete[]grid;
 
 		REQUIRE(124 == setLights);
 	}

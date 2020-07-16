@@ -23,8 +23,8 @@ namespace TwentyFifteen {
 	std::pair<std::string, std::string> Day06Puzzle::fastSolve() {
 		constexpr std::size_t size{ 1000 };
 
-		int* grid1 = new int[size * size]{ 0 };
-		int* grid2 = new int[size * size]{ 0 };
+		std::vector<int> grid1(size * size, 0);
+		std::vector<int> grid2(size * size, 0);
 
 		for (const auto& l : parseLines(m_InputLines)) {
 			applyLinePart1<size>(grid1, l);
@@ -39,8 +39,6 @@ namespace TwentyFifteen {
 				part2On += grid2[y * size + x];
 			}
 		}
-		delete[]grid1;
-		delete[]grid2;
 
 		return { std::to_string(part1On), std::to_string(part2On) };
 	}

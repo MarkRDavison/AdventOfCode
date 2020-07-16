@@ -4,6 +4,8 @@
 #include <Core/PuzzleBase.hpp>
 #include <zeno/Core/Rect.hpp>
 
+// TODO: This is very slow to compile
+
 namespace TwentyFifteen {
 	struct Day06InputLine {
 
@@ -35,7 +37,7 @@ namespace TwentyFifteen {
 		static std::vector<Day06InputLine> parseLines(const std::vector<std::string>& _input);
 
 		template<typename std::size_t TSize>
-		static void applyLinePart1(int *_grid, const Day06InputLine& _line) {
+		static void applyLinePart1(std::vector<int>& _grid, const Day06InputLine& _line) {
 			for (auto y = _line.bounds.left; y < _line.bounds.left + _line.bounds.width; ++y) {
 				for (auto x = _line.bounds.bot; x < _line.bounds.bot + _line.bounds.height; ++x) {
 					int& light = _grid[y * TSize + x];
@@ -60,7 +62,7 @@ namespace TwentyFifteen {
 		}
 
 		template<typename std::size_t TSize>
-		static void applyLinePart2(int* _grid, const Day06InputLine& _line) {
+		static void applyLinePart2(std::vector<int>& _grid, const Day06InputLine& _line) {
 			for (auto y = _line.bounds.left; y < _line.bounds.left + _line.bounds.width; ++y) {
 				for (auto x = _line.bounds.bot; x < _line.bounds.bot + _line.bounds.height; ++x) {
 					int& light = _grid[y * TSize + x];

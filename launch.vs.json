@@ -8,7 +8,7 @@
       "projectTarget": "advent-of-code-test.exe (test\\advent-of-code-test.exe)",
       "name": "advent-of-code-test.exe (test\\advent-of-code-test.exe)",
       "args": [
-        "~[slow][2015][Day02]"
+        "~[slow]"
       ]
     },
     {
@@ -17,7 +17,7 @@
       "projectTarget": "advent-of-code.exe (app\\advent-of-code.exe)",
       "type": "default",
       "args": [
-        "2015 2 ./data/2015/day02.txt"
+        "2015 3 ./data/2015/Day03.txt"
       ]
     }
   ]

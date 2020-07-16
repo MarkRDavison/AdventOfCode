@@ -3,21 +3,21 @@
 
 #include <string>
 #include <catch/catch.hpp>
-#include <Core/Vector2.hpp>
+#include <zeno/Core/Vector2.hpp>
 
 
 namespace Catch {
 
 	template<>
-	struct StringMaker<core::Vector2f> {
-		static std::string convert(core::Vector2f const& _value) {
+	struct StringMaker<ze::Vector2f> {
+		static std::string convert(ze::Vector2f const& _value) {
 			return "x: " + std::to_string(_value.x) + ", y: " + std::to_string(_value.y);
 		}
 	};
 
 	template<>
-	struct StringMaker<core::Vector2i> {
-		static std::string convert(core::Vector2i const& _value) {
+	struct StringMaker<ze::Vector2i> {
+		static std::string convert(ze::Vector2i const& _value) {
 			return "x: " + std::to_string(_value.x) + ", y: " + std::to_string(_value.y);
 		}
 	};

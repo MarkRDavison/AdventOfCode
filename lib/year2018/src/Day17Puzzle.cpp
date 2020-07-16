@@ -1,6 +1,6 @@
 #include <2018/Day17Puzzle.hpp>
-#include <Core/StringExtensions.hpp>
-#include <Core/Vector2.hpp>
+#include <zeno/Utility/StringExtensions.hpp>
+#include <zeno/Core/Vector2.hpp>
 #include <queue>
 
 #define CLAY '#'
@@ -25,7 +25,7 @@ namespace TwentyEighteen {
 
 
 	void Day17Puzzle::initialise(const core::InitialisationInfo& _initialisationInfo) {
-		setInputLines(core::StringExtensions::splitStringByDelimeter(core::StringExtensions::loadFileToString(_initialisationInfo.parameters[0]), "\n"));
+		setInputLines(ze::StringExtensions::splitStringByDelimeter(ze::StringExtensions::loadFileToString(_initialisationInfo.parameters[0]), "\n"));
 	}
 
 	void Day17Puzzle::setInputLines(const std::vector<std::string>& _inputLines) {
@@ -49,7 +49,7 @@ namespace TwentyEighteen {
 		map.minX = 500;
 		map.maxX = 500;
 		populateMap(map, parseInput(m_InputLines));
-		std::queue<core::Vector2i> locations;
+		std::queue<ze::Vector2i> locations;
 		locations.push({ 500, 0 });
 
 		dumpMap(map);
@@ -57,7 +57,7 @@ namespace TwentyEighteen {
 		while (!locations.empty()) {
 			//int v = getchar();
 
-			core::Vector2i loc = locations.front();locations.pop();
+			ze::Vector2i loc = locations.front();locations.pop();
 			auto& below = map.getCell(loc.x, loc.y + 1);
 			if (IS_EMPTY(below)) {
 				locations.push({ loc.x, loc.y + 1 });
@@ -102,7 +102,7 @@ namespace TwentyEighteen {
 		std::vector<Day17Puzzle::ParsedClayVein> parsed;
 
 		for (const auto& line : _input) {
-			const auto& parts = core::StringExtensions::splitStringByDelimeter(line, "=,.");
+			const auto& parts = ze::StringExtensions::splitStringByDelimeter(line, "=,.");
 			auto c1 = std::stoi(parts[1]);
 			auto c2_s = std::stoi(parts[3]);
 			auto c2_e = std::stoi(parts[4]);

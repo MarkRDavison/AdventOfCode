@@ -1,7 +1,7 @@
 #include <catch/catch.hpp>
 #include <catch/CatchToString.hpp>
 #include <Core/Pathfinding.hpp>
-#include <Core/StringExtensions.hpp>
+#include <zeno/Utility/StringExtensions.hpp>
 #include <iostream>
 
 namespace core {
@@ -28,7 +28,7 @@ namespace core {
 		const std::string end = "Y";
 
 		for (const auto& inp : input) {
-			const auto& pair = core::StringExtensions::splitStringByDelimeter(inp, ")");
+			const auto& pair = ze::StringExtensions::splitStringByDelimeter(inp, ")");
 			network.addEdge(pair[0], pair[1]);
 			network.addEdge(pair[1], pair[0]);
 		}

@@ -1,7 +1,7 @@
 #ifndef INCLUDED_ADVENT_OF_CODE_CORE_ORIENATION_HPP_
 #define INCLUDED_ADVENT_OF_CODE_CORE_ORIENATION_HPP_
 
-#include <Core/Vector2.hpp>
+#include <zeno/Core/Vector2.hpp>
 
 namespace core {
 

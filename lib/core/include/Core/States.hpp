@@ -21,7 +21,7 @@ namespace core {
 		template<typename SeenCostHash>
 		unsigned getShortestSolutionForStateByPredicate(State _start, std::function<bool(const State& _state)> _pred) {
 			State current = _start;
-			//std::queue<std::pair<State, unsigned>> open;
+
 			internal::PriorityQueue< std::pair<State, unsigned>, unsigned> open;
 			std::unordered_map<State, unsigned, SeenCostHash> seenCost;
 			std::unordered_map<State, std::pair<State, unsigned>> cameFrom;
@@ -30,7 +30,6 @@ namespace core {
 
 			std::unordered_map<State, unsigned> predicateStates;
 
-			//open.push(std::make_pair(current, 0));
 			open.put(std::make_pair(current, 0), 0);
 			cameFrom[_start] = std::make_pair(_start, 0);
 			long i = 0;
@@ -38,20 +37,12 @@ namespace core {
 			while (!open.empty()) {
 				i++;
 				auto next = open.get();
-				//open.pop();
 				cost = next.second;
 				current = next.first;
 				seenCost[current] = cost;
-				//if (i  > 100) {
-				//	std::cout << "QUEUE: " << open.elements.size()
-				//		<< " - cost: " << cost
-				//		<< " - " << current.str() << std::endl;
-				//	i = 0;
-				//}
 				if (_pred(current)) {
 					if (minimumCurrentCost > cost) {
 						minimumCurrentCost = cost;
-						std::cout << "Predicate state: " << current.str() << " at " << cost << std::endl;
 					}
 				}
 
@@ -59,19 +50,15 @@ namespace core {
 					if (n.valid(m_StateInfo)) {
 						auto nextCost = cost + current.cost(n, m_StateInfo);
 						if (nextCost > minimumCurrentCost) {
-							//std::cout << "Throwing away" << std::endl;
 							continue;
 						}
 						if (seenCost.find(n) == seenCost.end()) {
 							// We have not seen it before
-							//open.push(std::make_pair(n, nextCost));
 							open.put(std::make_pair(n, nextCost), n.priority(m_StateInfo));
 							cameFrom[n] = std::make_pair(current, nextCost);
 						} else {
-							std::cout << "Already seen" << std::endl;
 							// maybe its cheaper
 							if (seenCost[n] > nextCost) {
-								//open.push(std::make_pair(n, nextCost));
 								open.put(std::make_pair(n, nextCost), n.priority(m_StateInfo));
 								cameFrom[n] = std::make_pair(current, nextCost);
 							}

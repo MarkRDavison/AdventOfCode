@@ -200,7 +200,7 @@ class SkeletonGenerator:
 		f = open(fileName,"w+")
 
 		f.write('#include <{year}/Day{day}Puzzle.hpp>\n'.format(year=self.year, day=dayStr))
-		f.write('#include <Core/StringExtensions.hpp>\n')
+		f.write('#include <zeno/Utility/StringExtensions.hpp>\n')
 		f.write('\n')
 		f.write('namespace {ns} {{\n'.format(ns=self.createNamespace()))
 		f.write('	\n')
@@ -214,7 +214,7 @@ class SkeletonGenerator:
 		f.write('\n')
 		f.write('\n')
 		f.write('	void Day{day}Puzzle::initialise(const core::InitialisationInfo& _initialisationInfo) {{\n'.format(day=dayStr))
-		f.write('		setInputLines(core::StringExtensions::splitStringByDelimeter(core::StringExtensions::loadFileToString(_initialisationInfo.parameters[0]), "\\n"));\n')
+		f.write('		setInputLines(ze::StringExtensions::splitStringByDelimeter(ze::StringExtensions::loadFileToString(_initialisationInfo.parameters[0]), "\\n"));\n')
 		f.write('	}\n')
 		f.write('\n')
 		f.write('	void Day{day}Puzzle::setInputLines(const std::vector<std::string>& _inputLines) {{\n'.format(day=dayStr))

@@ -18,18 +18,18 @@ namespace core {
 		OrientationHelper() = delete;
 		~OrientationHelper() = delete;
 
-		static Vector2i toDirection(Orientation _orientation) {
+		static ze::Vector2i toDirection(Orientation _orientation) {
 			switch (_orientation) {
 			case Orientation::Up:
-				return { 0, +1 };
+				return ze::Vector2i{ 0, +1 };
 			case Orientation::Down:
-				return { 0, -1 };
+				return ze::Vector2i{ 0, -1 };
 			case Orientation::Right:
-				return { +1, 0 };
+				return ze::Vector2i{ +1, 0 };
 			case Orientation::Left:
-				return { -1, 0 };
+				return ze::Vector2i{ -1, 0 };
 			default:
-				return {};
+				return ze::Vector2i{ 0, 0 };
 			}
 		}
 

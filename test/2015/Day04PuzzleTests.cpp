@@ -3,24 +3,24 @@
 
 namespace TwentyFifteen {
 
-	TEST_CASE("2015 Day 4 Part 1 Example work", "[2015][Day04]") {
-	    const std::vector<std::string> input = {};
+	TEST_CASE("2015 Day 4 Example 1 work", "[2015][Day04]") {
+		std::mutex m;
 
-	    Day04Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
+		const std::vector<std::pair<std::string, int>>& data = {
+			{"abcdef", 609043},
+			{"pqrstuv", 1048970},
+		};
 
-	    auto answers = puzzle.fastSolve();
-	}
+		for (const auto& d : data) {
+			SECTION("Finding 5 length zeroed MD5 for " + d.first + " works.") {
 
-	TEST_CASE("2015 Day 4 Part 2 Example work", "[2015][Day04]") {
-	    const std::vector<std::string> input = {};
+				std::vector<unsigned> part1;
+				std::vector<unsigned> part2;
+				Day04Puzzle::findZeroedMd5(d.first, d.second - 1, 2, m, part1, part2);
 
-	    Day04Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+				REQUIRE(d.second == part1[0]);
+			}
+		}
 	}
 
 }

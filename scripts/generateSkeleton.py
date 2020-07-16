@@ -293,6 +293,9 @@ if __name__ == '__main__':
 		print('Skeleton for {y} is already present, exiting...'.format(y=year))
 		exit()
 
+	print('TODO: New Directory Structure')
+	exit()
+
 	print('Generating Skeleton for ', year)
 
 	gen.createCoreFile()

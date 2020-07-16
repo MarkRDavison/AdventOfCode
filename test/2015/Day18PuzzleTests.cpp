@@ -3,7 +3,7 @@
 
 namespace TwentyFifteen {
 
-	TEST_CASE("Day 18 Part 1 Example work", "[2015][Day18]") {
+	TEST_CASE("2015 Day 18 Part 1 Example work", "[2015][Day18]") {
 	    const std::vector<std::string> input = {};
 
 	    Day18Puzzle puzzle{};
@@ -13,7 +13,7 @@ namespace TwentyFifteen {
 	    auto answers = puzzle.fastSolve();
 	}
 
-	TEST_CASE("Day 18 Part 2 Example work", "[2015][Day18]") {
+	TEST_CASE("2015 Day 18 Part 2 Example work", "[2015][Day18]") {
 	    const std::vector<std::string> input = {};
 
 	    Day18Puzzle puzzle{};

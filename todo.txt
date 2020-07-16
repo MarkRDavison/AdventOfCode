@@ -1,0 +1,4 @@
+Problems identified for visualisations:
+
+Tags:
+[slow] - slow tests, don't run these when inside the ide

@@ -44,15 +44,16 @@ namespace internal {
 	};
 
 	struct EdgeGraph {
-		std::unordered_map<std::string, std::vector<std::string>> edges;
+		std::unordered_map<std::string, std::unordered_set<std::string>> edges;
 		std::unordered_map<std::string, float> weights;
+		std::unordered_set<std::string> nodes;
 
-		std::vector<std::string> neighbours(const std::string& _id) {
-			return edges[_id];
+		std::unordered_set<std::string> neighbours(const std::string& _id) {
+			return edges.at(_id);
 		}
 
 		float cost(const std::string& _from, const std::string& _to) {
-			return weights[_from + "_" + _to];
+			return weights[_to + "_" + _from];
 		}
 
 		float heuristic(const std::string& _from, const std::string& _to) {
@@ -253,10 +254,15 @@ namespace core {
 		unsigned performDijkstraSearch(const std::string& _start, const std::string& _end);
 		unsigned performAStarSearch(const std::string& _start, const std::string& _end);
 
-		unsigned depthFirstMinCostHeuristic(const std::string& _start);
+		std::pair<std::vector<std::string>, float> getShortestPathVisitingAll();
+		std::pair<std::vector<std::string>, float> getShortestPathVisitingAll(const std::string& _start);
+		std::pair<std::vector<std::string>, float> getShortestPathVisitingAll(const std::string& _start, float _currentShortest);
 
-	private:
-		std::vector<std::string> getNodes();
+		std::pair<std::vector<std::string>, float> getLongestPathVisitingAll();
+		std::pair<std::vector<std::string>, float> getLongestPathVisitingAll(const std::string& _start);
+		std::pair<std::vector<std::string>, float> getLongestPathVisitingAll(const std::string& _start, float _currentShortest);
+
+		std::unordered_set<std::string> getNodes();
 
 	private:
 		internal::EdgeGraph sg{};

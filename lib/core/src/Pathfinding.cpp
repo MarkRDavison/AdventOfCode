@@ -4,12 +4,107 @@
 
 namespace core {
 
+	// TODO: Make these one method that you pass a comparator to
+	std::pair<std::vector<std::string>, float> doDepthFirstMinCostRecursive(
+		internal::EdgeGraph& _graph,
+		std::vector<std::string> _path,
+		float _cost,
+		const std::string& _node,
+		std::unordered_set<std::string> _visited,
+		std::size_t _numToVisit,
+		float _currentShortest) {
+
+		if (_currentShortest < _cost) {
+			return std::make_pair(_path, std::numeric_limits<float>::max());
+		}
+
+		_path.push_back(_node);
+		_visited.insert(_node);
+
+		if (_path.size() == _numToVisit) {
+			return std::make_pair(_path, _cost);
+		}
+
+		std::vector<std::string> minPath;
+		float minPathCost = std::numeric_limits<float>::max();
+
+		for (const auto& n : _graph.neighbours(_node)) {
+			if (_visited.count(n) != 0) {
+				// Already been there on this path
+				continue;
+			}
+
+			const auto& potential = doDepthFirstMinCostRecursive(
+				_graph,
+				_path,
+				_cost + _graph.cost(_node, n),
+				n,
+				_visited,
+				_numToVisit,
+				_currentShortest
+			);
+
+			if (potential.second < minPathCost) {
+				minPathCost = potential.second;
+				minPath = potential.first;
+			}
+		}
+
+		return std::make_pair(minPath, minPathCost);
+	}
+	std::pair<std::vector<std::string>, float> doDepthFirstMaxCostRecursive(
+		internal::EdgeGraph& _graph,
+		std::vector<std::string> _path,
+		float _cost,
+		const std::string& _node,
+		std::unordered_set<std::string> _visited,
+		std::size_t _numToVisit,
+		float _currentLongest) {
+
+		_path.push_back(_node);
+		_visited.insert(_node);
+
+		if (_path.size() == _numToVisit) {
+			return std::make_pair(_path, _cost);
+		}
+
+		std::vector<std::string> minPath;
+		float maxPathCost = std::numeric_limits<float>::min();
+
+		for (const auto& n : _graph.neighbours(_node)) {
+			if (_visited.count(n) != 0) {
+				// Already been there on this path
+				continue;
+			}
+
+			const auto& potential = doDepthFirstMaxCostRecursive(
+				_graph,
+				_path,
+				_cost + _graph.cost(_node, n),
+				n,
+				_visited,
+				_numToVisit,
+				_currentLongest
+			);
+
+			if (potential.second > maxPathCost) {
+				maxPathCost = potential.second;
+				minPath = potential.first;
+			}
+		}
+
+		return std::make_pair(minPath, maxPathCost);
+	}
+
 	void EdgeNetwork::addEdge(const std::string& _a, const std::string& _b) {
 		addEdge(_a, _b, 0.0f);
 	}
 	void EdgeNetwork::addEdge(const std::string& _a, const std::string& _b, float _weight) {
-		sg.edges[_a].push_back(_b);
+		sg.edges[_a].insert(_b);
+		sg.edges[_b].insert(_a);
 		sg.weights.emplace(_a + "_" + _b, _weight);
+		this->sg.nodes.insert(_a);
+		this->sg.nodes.insert(_b);
 	}
 	std::vector<std::string> EdgeNetwork::getShortestPath(const std::string& _start, const std::string& _end) {
 		std::unordered_map<std::string, std::string> origins;
@@ -17,12 +112,8 @@ namespace core {
 		internal::dijkstraSearch(sg, _start, _end, origins, costs);
 		return internal::reconstruct_path(_start, _end, origins);
 	}
-	std::vector<std::string> EdgeNetwork::getNodes() {
-		std::vector<std::string>nodes;
-		for (const auto& _n : sg.edges) {
-			nodes.push_back(_n.first);
-		}
-		return nodes;
+	std::unordered_set<std::string> EdgeNetwork::getNodes() {
+		return sg.nodes;
 	}
 	std::vector<std::pair<std::string, std::pair<unsigned, float>>> EdgeNetwork::performDepthFirstSearch(const std::string& _start, const std::string& _end) {
 		return internal::depthFirstSearch(sg, _start, _end);
@@ -47,50 +138,43 @@ namespace core {
 		
 		return 0;
 	}
-
-	std::vector<std::string> doDepthFirstMinCostHeuristicRecursive(internal::EdgeGraph& _graph, const std::string& _node, std::unordered_set<std::string> _visited, float _cost) {
-		//std::cout << "Entered: " << _node << " at " << _cost << std::endl;
-		_visited.insert(_node);
-		bool leaf = true;
-		for (const auto& n : _graph.neighbours(_node)) {
-			if (_visited.find(n) != _visited.end()) { continue; }
-			leaf = false;
-			float newCost = _cost + _graph.weights[_node + "_" + n];
-			//std::cout << "From " << _node << " can go to: " << n << " at a cost of " << newCost << std::endl;
-			auto childRecommendation = doDepthFirstMinCostHeuristicRecursive(_graph, n, _visited, newCost);
-		}
-		if (leaf) {
-			std::cout << "I (" << _node << ") am a leaf, cost " << _cost << std::endl;
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getShortestPathVisitingAll(){
+		std::pair<std::vector<std::string>, float> result;
+		float shortest = std::numeric_limits<float>::max();
+		for (const auto& n : getNodes()) {
+			const auto& res = getShortestPathVisitingAll(n, shortest);
+			if (shortest > res.second) {
+				shortest = res.second;
+				result = res;
+			}
 		}
 
-		//_visited.insert(_node);
-		//bool wentToChild = false;
-		//for (const auto& n : _graph.neighbours(_node)) {
-		//	if (_visited.count(n) > 0) { continue; }
-		//
-		//	float newCost = _cost + _graph.weights[_node + "_" + n];
-		//	if (newCost > _bestCost) {
-		//		continue;
-		//	}
-		//
-		//	wentToChild = true;
-		//	float best = doDepthFirstMinCostHeuristicRecursive(_graph, n, _visited, _cost + _graph.weights[_node + "_" + n], _bestCost);
-		//	if (best < _bestCost) {
-		//		_bestCost = best;
-		//	}
-		//}
-		//
-		//if (!wentToChild) {
-		//	return _cost;
-		//}
-
-		return {};
+		return result;
+	}
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getShortestPathVisitingAll(const std::string& _start) {
+		return getShortestPathVisitingAll(_start, std::numeric_limits<float>::max());
+	}
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getShortestPathVisitingAll(const std::string& _start, float _currentShortest){
+		return doDepthFirstMinCostRecursive(sg, {}, 0.0f, _start, {}, sg.nodes.size(), _currentShortest);
 	}
 
-	unsigned EdgeNetwork::depthFirstMinCostHeuristic(const std::string& _start) {
-		std::unordered_set<std::string> visited;
-		const auto& path = doDepthFirstMinCostHeuristicRecursive(sg, _start, visited, 0.0f);
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getLongestPathVisitingAll() {
+		std::pair<std::vector<std::string>, float> result;
+		float longest = std::numeric_limits<float>::min();
+		for (const auto& n : getNodes()) {
+			const auto& res = getLongestPathVisitingAll(n, longest);
+			if (longest < res.second) {
+				longest = res.second;
+				result = res;
+			}
+		}
 
-		return 0;
+		return result;
+	}
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getLongestPathVisitingAll(const std::string& _start) {
+		return getLongestPathVisitingAll(_start, std::numeric_limits<float>::min());
+	}
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getLongestPathVisitingAll(const std::string& _start, float _currentShortest) {
+		return doDepthFirstMaxCostRecursive(sg, {}, 0.0f, _start, {}, sg.nodes.size(), _currentShortest);
 	}
 }

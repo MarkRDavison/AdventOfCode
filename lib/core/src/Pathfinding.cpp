@@ -177,4 +177,69 @@ namespace core {
 	std::pair<std::vector<std::string>, float> EdgeNetwork::getLongestPathVisitingAll(const std::string& _start, float _currentShortest) {
 		return doDepthFirstMaxCostRecursive(sg, {}, 0.0f, _start, {}, sg.nodes.size(), _currentShortest);
 	}
+
+	std::pair<std::vector<std::string>, float> doDepthFirstMaxCostRecursiveReturningToStart(
+		internal::EdgeGraph& _graph,
+		std::vector<std::string> _path,
+		float _cost,
+		const std::string& _node,
+		std::unordered_set<std::string> _visited,
+		std::size_t _numToVisit,
+		float _currentLongest) {
+
+		_path.push_back(_node);
+		_visited.insert(_node);
+
+		if (_path.size() == _numToVisit) {
+			_path.push_back(_path.front());
+			_cost += _graph.cost(_node, _path.front());
+			return std::make_pair(_path, _cost);
+		}
+
+		std::vector<std::string> minPath;
+		float maxPathCost = std::numeric_limits<float>::min();
+
+		for (const auto& n : _graph.neighbours(_node)) {
+			if (_visited.count(n) != 0) {
+				// Already been there on this path
+				continue;
+			}
+
+			const auto& potential = doDepthFirstMaxCostRecursiveReturningToStart(
+				_graph,
+				_path,
+				_cost + _graph.cost(_node, n),
+				n,
+				_visited,
+				_numToVisit,
+				_currentLongest
+			);
+
+			if (potential.second > maxPathCost) {
+				maxPathCost = potential.second;
+				minPath = potential.first;
+			}
+		}
+
+		return std::make_pair(minPath, maxPathCost);
+	}
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getLongestPathVisitingAllReturningToStart() {
+		std::pair<std::vector<std::string>, float> result;
+		float shortest = std::numeric_limits<float>::max();
+		for (const auto& n : getNodes()) {
+			const auto& res = getLongestPathVisitingAllReturningToStart(n, shortest);
+			if (shortest > res.second) {
+				shortest = res.second;
+				result = res;
+			}
+		}
+
+		return result;
+	}
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getLongestPathVisitingAllReturningToStart(const std::string& _start) {
+		return getLongestPathVisitingAllReturningToStart(_start, std::numeric_limits<float>::min());
+	}
+	std::pair<std::vector<std::string>, float> EdgeNetwork::getLongestPathVisitingAllReturningToStart(const std::string& _start, float _currentShortest) {
+		return doDepthFirstMaxCostRecursiveReturningToStart(sg, {}, 0.0f, _start, {}, sg.nodes.size(), _currentShortest);
+	}
 }

@@ -262,6 +262,10 @@ namespace core {
 		std::pair<std::vector<std::string>, float> getLongestPathVisitingAll(const std::string& _start);
 		std::pair<std::vector<std::string>, float> getLongestPathVisitingAll(const std::string& _start, float _currentShortest);
 
+		std::pair<std::vector<std::string>, float> getLongestPathVisitingAllReturningToStart();
+		std::pair<std::vector<std::string>, float> getLongestPathVisitingAllReturningToStart(const std::string& _start);
+		std::pair<std::vector<std::string>, float> getLongestPathVisitingAllReturningToStart(const std::string& _start, float _currentShortest);
+
 		std::unordered_set<std::string> getNodes();
 
 	private:

@@ -1,26 +1,16 @@
 #include <catch/catch.hpp>
 #include <2015/Day21Puzzle.hpp>
+#include <unordered_map>
+#include <algorithm>
+#include <numeric>
 
 namespace TwentyFifteen {
 
 	TEST_CASE("2015 Day 21 Part 1 Example work", "[2015][Day21]") {
-	    const std::vector<std::string> input = {};
+		CharacterStats player{ 8,5,5 };
+		CharacterStats boss{ 12,7,2 };
 
-	    Day21Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
-	}
-
-	TEST_CASE("2015 Day 21 Part 2 Example work", "[2015][Day21]") {
-	    const std::vector<std::string> input = {};
-
-	    Day21Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+		REQUIRE(Day21Puzzle::doesPlayerWin(player, boss));
 	}
 
 }

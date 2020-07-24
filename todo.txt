@@ -1,5 +1,9 @@
 Problems identified for visualisations:
 	2015 - Day 18
+	2015 - Day 21 - maybe...
+
+Useful things
+	2015 - Day 21 N choose K permuations
 
 Tags:
 [slow] - slow tests, don't run these when inside the ide

@@ -17,16 +17,20 @@ namespace core {
 
 		std::map<std::pair<int, int>, SubRegion> world;
 
-		T& Region::getCell(int x, int y) {
-
+		T& getCell(int x, int y) {
 			minY = std::min(minY, y);
 			maxY = std::max(maxY, y);
 			minX = std::min(minX, x);
 			maxX = std::max(maxX, x);
 
-			const std::pair<int, int> major_coords(x&region_major, y&region_major);
-			SubRegion &r = world[major_coords];
-			return r[x&region_minor][y&region_minor];
+			const std::pair<int, int> major_coords(x & region_major, y & region_major);
+			SubRegion& r = world[major_coords];
+			return r[x & region_minor][y & region_minor];
+		}
+		const T& getCell(int x, int y) const {
+			const std::pair<int, int> major_coords(x & region_major, y & region_major);			
+			const SubRegion& r = world.at(major_coords);
+			return r[x & region_minor][y & region_minor];
 		}
 
 		int minY{ 0 };

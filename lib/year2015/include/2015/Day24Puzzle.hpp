@@ -14,6 +14,8 @@ namespace TwentyFifteen {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		static long long findSmallestQuantumEntaglement(const std::vector<int>& _weights, int _sections);
+
 	private:
 		std::vector<std::string> m_InputLines;
 	};

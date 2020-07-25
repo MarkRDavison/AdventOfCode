@@ -55,9 +55,7 @@ namespace TwentyFifteen {
 		bool tripleIncreaseFound = false;
 		bool doubleDoubleFound = false;
 		char doubleFirstChar = '?';
-		if (_password == "abcdffaa") {
-			std::cout << "SHOULD WORK\n";
-		}
+
 		for (unsigned i = 0; i < _password.size(); ++i) {
 			char c = _password[i];
 			if (c == 'i' || c == 'o' || c == 'l') {

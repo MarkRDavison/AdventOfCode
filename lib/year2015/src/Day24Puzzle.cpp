@@ -46,13 +46,14 @@ namespace TwentyFifteen {
 		const std::function<RecurseResult(const std::vector<int>&, unsigned, int, long long, int)> Recurser = [&Recurser](
 			const std::vector<int>& _weights, unsigned _pos, int _remaining, long long _currentQE, int _numberPackages) -> RecurseResult {
 
+				if (_remaining == 0) {
+					return { _currentQE, _numberPackages };
+				}
+
 				if (_remaining < 0 || _pos == _weights.size()) {
 					return { std::numeric_limits<long long>::max(),std::numeric_limits<int>::max() };
 				}
 
-				if (_remaining == 0) {
-					return { _currentQE, _numberPackages };
-				}
 
 				const auto bestIncluding = Recurser(_weights, _pos + 1, _remaining - _weights[_pos], _currentQE * (long long)_weights[_pos], _numberPackages + 1);
 				const auto bestExcluding = Recurser(_weights, _pos + 1, _remaining, _currentQE, _numberPackages);

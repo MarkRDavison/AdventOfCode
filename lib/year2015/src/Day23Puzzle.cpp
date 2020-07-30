@@ -99,7 +99,7 @@ namespace TwentyFifteen {
 			RegisterValue pc = 0;
 
 			while (0 <= pc && pc < (RegisterValue)instructions.size()) {
-				const Instruction& instr = instructions[pc];
+				const Instruction& instr = instructions[(unsigned)pc];
 				const Operation& op = map[instr.type];
 				op(instr, registers, pc);
 			}

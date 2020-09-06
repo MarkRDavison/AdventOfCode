@@ -14,6 +14,11 @@ namespace TwentySixteen {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		static bool validateRoom(const std::string& _roomInfo, int& _sectorId);
+		static bool isNorthPoleRoom(const std::string& _roomInfo, int& _sectorId, const std::string& _key);
+		static int doPart1(const std::vector<std::string>& _input);
+		static int doPart2(const std::vector<std::string>& _input);
+
 	private:
 		std::vector<std::string> m_InputLines;
 	};

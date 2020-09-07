@@ -1,6 +1,7 @@
 Problems identified for visualisations:
 	2015 - Day 18
 	2015 - Day 21 - maybe...
+	2016 - Day 8
 
 Useful things
 	2015 - Day 21 N choose K permuations

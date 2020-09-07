@@ -29,7 +29,10 @@ namespace TwentySixteen {
 		std::cout << std::endl;
 		for (unsigned y = 0; y < 6; ++y) {
 			for (unsigned x = 0; x < 50; ++x) {
-				std::cout << (screen[y * 50 + x] == '#' ? (char)178 : ' ');
+				if (x > 0 && x % 5 == 0) {
+					std::cout << "\t";
+				}
+				std::cout << (screen[y * 50 + x] == '#' ? '@' : ' ');
 			}
 			std::cout << std::endl;
 		}

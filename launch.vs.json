@@ -17,7 +17,7 @@
       "projectTarget": "advent-of-code.exe (app\\advent-of-code.exe)",
       "type": "default",
       "args": [
-        "2015 24 ./data/2015/Day24.txt"
+        "2016 10 ./data/2016/Day10.txt"
       ]
     }
   ]

@@ -3,24 +3,26 @@
 
 namespace TwentySixteen {
 
-	TEST_CASE("2016 Day 11 Part 1 Example work", "[2016][Day11]") {
-	    const std::vector<std::string> input = {};
 
-	    Day11Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
+	TEST_CASE("2016 Day 11 valid works", "[2016][Day11]") {
+		Day11Puzzle::FacilityStateInfo info;
+		REQUIRE(Day11Puzzle::FacilityState(1, { 2,1,3,1 }).valid(info));
+		REQUIRE(Day11Puzzle::FacilityState(1, { 1,1,1,1 }).valid(info));
+		REQUIRE_FALSE(Day11Puzzle::FacilityState(1, { 2,1,1,1 }).valid(info));
+		REQUIRE_FALSE(Day11Puzzle::FacilityState(1, { 1,1,2,1 }).valid(info));
 
-	    auto answers = puzzle.fastSolve();
 	}
 
-	TEST_CASE("2016 Day 11 Part 2 Example work", "[2016][Day11]") {
-	    const std::vector<std::string> input = {};
+	TEST_CASE("2016 Day 11 Part 1 Example work", "[2016][Day11]") {
+		const std::vector<std::string> input = {
+"The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.",
+"The second floor contains a hydrogen generator.",
+"The third floor contains a lithium generator.",
+"The fourth floor contains nothing relevant."
+		};
 
-	    Day11Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+		auto [start, end, info] = Day11Puzzle::parseInput(input, false);
+		REQUIRE(11 == Day11Puzzle::lengthOfPath(start, end, info));
 	}
 
 }

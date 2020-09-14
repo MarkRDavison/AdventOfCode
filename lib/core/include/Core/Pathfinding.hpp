@@ -14,6 +14,12 @@ namespace std {
 			return std::hash<int>()(obj.x) ^ std::hash<int>()(obj.y);
 		}
 	};
+	template<class T>
+	struct hash<ze::Vector2<T>> {
+		size_t operator()(const ze::Vector2<T>& obj) const {
+			return std::hash<T>()(obj.x) ^ std::hash<T>()(obj.y);
+		}
+	};
 }
 namespace internal {
 
@@ -133,6 +139,71 @@ namespace internal {
 			}
 		}
 
+		return originatingNodes;
+	}
+	template <typename Graph, typename Node>
+	std::unordered_map<Node, int> floodFill(Graph& _graph, Node _start) {
+		std::queue<std::pair<Node, int>> toVisit;
+		toVisit.push({ _start, 0 });
+
+		std::unordered_map<Node, int> costs;
+		costs[_start] = 0;
+
+		while (!toVisit.empty()) {
+			const auto [current, cost] = toVisit.front();
+			toVisit.pop();
+
+			for (const Node& next : _graph.neighbours(current)) {
+				if (costs.count(next) == 0) {
+					toVisit.push({ next, cost + 1 });
+					costs[next] = cost + 1;
+				}
+				else {
+					auto prevCost = costs[next];
+					if (prevCost > cost + 1) {
+						costs[next] = cost + 1;
+						toVisit.push({ next, cost + 1 });
+					}
+				}
+			}
+		}
+
+		return costs;
+	}
+
+	template <typename Graph, typename Node>
+	std::unordered_map<Node, Node> breadthFirstSearchWithMaxSteps(Graph& _graph, Node _start, int _maxSteps) {
+		std::queue<std::pair<Node, int>> toVisit;
+		toVisit.push({ _start, 0 });
+
+		std::unordered_map<Node, Node> originatingNodes;
+		std::unordered_map<Node, int> costs;
+		originatingNodes[_start] = _start;
+
+		while (!toVisit.empty()) {
+			const auto [current, cost] = toVisit.front();
+			toVisit.pop();
+			if (cost >= _maxSteps) {
+				continue;
+			}
+
+			for (const Node& next : _graph.neighbours(current)) {
+				if (costs.find(next) != costs.end()) {
+					auto previousCost = costs[next];
+					if (previousCost > cost + 1) {
+						costs[next] = cost + 1;
+						toVisit.push({ next, cost + 1 });
+						originatingNodes[next] = current;
+					}
+				}
+				else {
+					toVisit.push({ next, cost + 1 });
+					originatingNodes[next] = current;
+					costs[next] = cost + 1;
+				}
+			}
+		}
+		
 		return originatingNodes;
 	}
 
@@ -284,7 +355,6 @@ namespace core {
 
 		std::vector<std::vector<Cell>>& getCells() { return cg.cells; }
 
-	private:
 		internal::CartesianGraph<Cell> cg{};
 	};
 

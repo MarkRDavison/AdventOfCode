@@ -69,7 +69,7 @@ namespace core {
 	//////////////////////////////////////////////
 
 	// nifty shortcut ctor, compute MD5 for string and finalize it right away
-	MD5::MD5(const std::string & text) {
+	MD5::MD5(const std::string & text)  {
 		init();
 		update(text.c_str(), static_cast<size_type>(text.length()));
 		finalize();
@@ -287,12 +287,15 @@ namespace core {
 	std::string MD5::hexdigest() const {
 		if (!finalized)
 			return "";
-
 		char buf[33];
-		for (int i = 0; i < 16; i++)
-			sprintf(buf + i * 2, "%02x", digest[i]);
+		int i;
+		for (i = 0; i < 16; i++) {
+			unsigned char digit0 = digest[i] >> 4;
+			unsigned char digit1 = digest[i] & 0x0f;
+			buf[i * 2 + 0] = digit0 < 10 ? digit0 + '0' : digit0 - 10 + 'a';
+			buf[i * 2 + 1] = digit1 < 10 ? digit1 + '0' : digit1 - 10 + 'a';
+		}
 		buf[32] = 0;
-
 		return std::string(buf);
 	}
 

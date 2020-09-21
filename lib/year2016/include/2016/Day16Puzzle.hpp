@@ -14,6 +14,11 @@ namespace TwentySixteen {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		static std::string performDragonProcess(const std::string& _input);
+		static std::string performDragonProcessForDesiredSize(const std::string& _input, unsigned _size);
+		static std::string calculateChecksum(const std::string& _input);
+		static std::string calculateChecksumFromStateForSize(const std::string& _state, unsigned _length);
+
 	private:
 		std::vector<std::string> m_InputLines;
 	};

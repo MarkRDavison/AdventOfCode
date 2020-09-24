@@ -3,24 +3,27 @@
 
 namespace TwentySixteen {
 
-	TEST_CASE("2016 Day 18 Part 1 Example work", "[2016][Day18]") {
-	    const std::vector<std::string> input = {};
+	TEST_CASE("2016 Day 18 createMap works", "[2016][Day18]") {
+		auto map = Day18Puzzle::createMap("..^^.", 3);
+		REQUIRE("..^^." == map[0]);
+		REQUIRE(".^^^^" == map[1]);
+		REQUIRE("^^..^" == map[2]);
 
-	    Day18Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+		map = Day18Puzzle::createMap(".^^.^.^^^^", 10);
+		REQUIRE(".^^.^.^^^^" == map[0]);
+		REQUIRE("^^^...^..^" == map[1]);
+		REQUIRE("^.^^.^.^^." == map[2]);
+		REQUIRE("..^^...^^^" == map[3]);
+		REQUIRE(".^^^^.^^.^" == map[4]);
+		REQUIRE("^^..^.^^.." == map[5]);
+		REQUIRE("^^^^..^^^." == map[6]);
+		REQUIRE("^..^^^^.^^" == map[7]);
+		REQUIRE(".^^^..^.^^" == map[8]);
+		REQUIRE("^^.^^^..^^" == map[9]);
 	}
 
-	TEST_CASE("2016 Day 18 Part 2 Example work", "[2016][Day18]") {
-	    const std::vector<std::string> input = {};
-
-	    Day18Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+	TEST_CASE("2016 Day 18 getSafeTilesCount works", "[2016][Day18]") {
+		REQUIRE(38 == Day18Puzzle::getSafeTilesCount(".^^.^.^^^^", 10));
 	}
 
 }

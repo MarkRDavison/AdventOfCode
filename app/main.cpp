@@ -8,6 +8,7 @@
 #include <Puzzles2017.hpp>
 #include <Puzzles2018.hpp>
 #include <Puzzles2019.hpp>
+#include <Puzzles2020.hpp>
 
 int main(int _argc, char** _argv) {
     REGISTER_YEAR(TwentyFifteen, 2015);
@@ -15,6 +16,7 @@ int main(int _argc, char** _argv) {
     REGISTER_YEAR(TwentySeventeen, 2017);
     REGISTER_YEAR(TwentyEighteen, 2018);
     REGISTER_YEAR(TwentyNineteen, 2019);
+    REGISTER_YEAR(TwentyTwenty, 2020);
 
 	core::IPuzzleBase* puzzle = core::PuzzleConstructor::createPuzzle(core::InitialisationInfo::parseArguments(_argc, _argv));
 

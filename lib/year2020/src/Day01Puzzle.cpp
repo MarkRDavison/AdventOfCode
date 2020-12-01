@@ -1,6 +1,5 @@
 #include <2020/Day01Puzzle.hpp>
 #include <zeno/Utility/StringExtensions.hpp>
-#include <algorithm>
 
 namespace TwentyTwenty {
 	

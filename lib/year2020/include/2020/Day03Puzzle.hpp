@@ -14,6 +14,7 @@ namespace TwentyTwenty {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		long long getTreesForSlope(unsigned _x, unsigned _y) const;
 	private:
 		std::vector<std::string> m_InputLines;
 	};

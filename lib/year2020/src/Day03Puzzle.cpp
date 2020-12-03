@@ -4,7 +4,7 @@
 namespace TwentyTwenty {
 	
 	Day03Puzzle::Day03Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2020, 3) {
+		core::PuzzleBase("Toboggan Trajectory", 2020, 3) {
 	}
 
 

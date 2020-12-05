@@ -2,6 +2,7 @@
 #define INCLUDED_ADVENT_OF_CODE_2020_DAY_04_PUZZLE_HPP_
 
 #include <Core/PuzzleBase.hpp>
+#include <map>
 
 namespace TwentyTwenty {
 	

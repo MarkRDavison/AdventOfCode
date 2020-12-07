@@ -11,24 +11,12 @@
 
 namespace TwentyTwenty {
 
-	// TODO: Move this to utility framework
-	std::vector<std::string> splitStringByLines3(const std::string& _parameter) {
-		std::vector<std::string> result;
-		std::stringstream stringStream(_parameter);
-		std::string line;
-		while (std::getline(stringStream, line)) {
-			result.push_back(line);
-		}
-
-		return result;
-	}
 	Day07Puzzle::Day07Puzzle() :
-		core::PuzzleBase("", 2020, 7) {
+		core::PuzzleBase("Handy Haversacks", 2020, 7) {
 	}
 
 
 	void Day07Puzzle::initialise(const core::InitialisationInfo& _initialisationInfo) {
-		// setInputLines(splitStringByLines2(ze::StringExtensions::loadFileToString(_initialisationInfo.parameters[0])));
 		setInputLines(ze::StringExtensions::splitStringByDelimeter(ze::StringExtensions::loadFileToString(_initialisationInfo.parameters[0]), "\n"));
 	}
 

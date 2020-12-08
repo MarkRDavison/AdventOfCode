@@ -1,5 +1,6 @@
 #include <2020/Day08Puzzle.hpp>
 #include <zeno/Utility/StringExtensions.hpp>
+#include <2020/HandheldConsole.hpp>
 
 #include <set>
 
@@ -19,14 +20,44 @@ namespace TwentyTwenty {
 	}
 
 	std::pair<std::string, std::string> Day08Puzzle::fastSolve() {
-		const auto& parsed = Day08Puzzle::parseInput(m_InputLines);
+		HandheldConsole console(m_InputLines);
 
-		const auto part1 = Day08Puzzle::doPart1(parsed);
-		const auto part2 = Day08Puzzle::doPart2(parsed);
+		std::set<HandheldConsoleValue> visitedProgramCounters;
 
-		return { part1, part2 };
+		while (visitedProgramCounters.find(console.programCounter) == visitedProgramCounters.end()) {
+			visitedProgramCounters.insert(console.programCounter);
+			console.runOperationAtProgramCounter();
+		}
+
+		const auto part1 = console.registers[HandheldConsole::AccumulatorName];
+
+		for (unsigned i = 0; i < console.originalOperations.size(); ++i) {
+			const auto currentOpCode = console.originalOperations[i].type;
+			if (currentOpCode != ConsoleOperation::OpType::NOP &&
+				currentOpCode != ConsoleOperation::OpType::JMP) {
+				continue;
+			}
+			visitedProgramCounters = std::set<HandheldConsoleValue>();
+
+			auto newOperations(console.originalOperations);
+			newOperations[i].type = (currentOpCode == ConsoleOperation::OpType::NOP
+				? ConsoleOperation::OpType::JMP
+				: ConsoleOperation::OpType::NOP
+			);
+			HandheldConsole modifiedConsole(newOperations);
+
+			while (visitedProgramCounters.find(modifiedConsole.programCounter) == visitedProgramCounters.end()) {
+				visitedProgramCounters.insert(modifiedConsole.programCounter);
+				modifiedConsole.runOperationAtProgramCounter();
+				if (0 > modifiedConsole.programCounter || modifiedConsole.programCounter >= modifiedConsole.originalOperations.size()) {
+					return { std::to_string(part1), std::to_string(modifiedConsole.registers[HandheldConsole::AccumulatorName]) };
+				}
+			}
+		}
+
+		return { std::to_string(part1), "Part 2 failed." };
 	}
-
+	/*
 	std::vector<Day8Struct> Day08Puzzle::parseInput(const std::vector<std::string>& _inputLines) {
 		std::vector<Day8Struct> parsed;
 
@@ -113,4 +144,5 @@ namespace TwentyTwenty {
 		}
 		return std::to_string(acc);
 	}
+	*/
 }

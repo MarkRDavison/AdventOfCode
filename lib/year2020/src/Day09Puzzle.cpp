@@ -38,7 +38,7 @@ namespace TwentyTwenty {
 		return false;
 	}
 
-	static NumberType getContiguousRange(NumberType _invalid, const std::vector<NumberType>& _numbers) {
+	static std::pair<NumberType, NumberType> getContiguousRange(NumberType _invalid, const std::vector<NumberType>& _numbers) {
 		for (unsigned i = 0; i < _numbers.size(); ++i) {
 			NumberType currentSum = _numbers[i];
 
@@ -52,7 +52,7 @@ namespace TwentyTwenty {
 						max = std::max(max, _numbers[k]);
 					}
 
-					return min + max;
+					return { min, max };
 				}
 				if (currentSum > _invalid || j == _numbers.size()) {
 					break;
@@ -61,7 +61,7 @@ namespace TwentyTwenty {
 			}
 		}
 
-		return -1;
+		return { 0, 0 };
 	}
 	std::pair<NumberType, NumberType> Day09Puzzle::solve(const std::vector<std::string>& _inputLines, NumberType _preambleLength) {
 		std::vector<NumberType> parsed;
@@ -70,7 +70,7 @@ namespace TwentyTwenty {
 				return std::stoll(_str);
 			});
 
-		NumberType part1;
+		NumberType part1 = 0;
 
 		for (unsigned i = (unsigned)_preambleLength; i < parsed.size(); ++i) {
 			if (!isValid(parsed[i], &parsed[i - (unsigned)_preambleLength], _preambleLength)) {
@@ -79,7 +79,9 @@ namespace TwentyTwenty {
 			}
 		}
 
-		NumberType part2 = getContiguousRange(part1, parsed);
+		const auto& [min, max] = getContiguousRange(part1, parsed);
+
+		NumberType part2 = min + max;
 
 		return { part1, part2 };
 	}

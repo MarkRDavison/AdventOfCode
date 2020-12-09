@@ -4,7 +4,9 @@
 #include <Core/PuzzleBase.hpp>
 
 namespace TwentyTwenty {
-	
+
+	using NumberType = long long;
+
 	class Day09Puzzle : public core::PuzzleBase {
 	public:
 		Day09Puzzle();
@@ -14,6 +16,8 @@ namespace TwentyTwenty {
 		void setInputLines(const std::vector<std::string>& _inputLines);
 		std::pair<std::string, std::string> fastSolve() override;
 
+		static std::pair<NumberType, NumberType> solve(const std::vector<std::string>& _inputLines, NumberType _preambleLength);
+	
 	private:
 		std::vector<std::string> m_InputLines;
 	};

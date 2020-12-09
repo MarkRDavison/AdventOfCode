@@ -25,11 +25,9 @@ namespace TwentyTwenty {
 
 	static bool isValid(NumberType _current, const NumberType* _prevStart, NumberType _preamble) {
 
-		std::vector<NumberType> previous(_prevStart, _prevStart + _preamble);
-
-		for (unsigned i = 0; i < previous.size(); ++i) {
-			for (unsigned j = i + 1; j < previous.size(); ++j) {
-				if (previous[i] + previous[j] == _current) {
+		for (unsigned i = 0; i < (unsigned)_preamble; ++i) {
+			for (unsigned j = i + 1; j < (unsigned)_preamble; ++j) {
+				if (_prevStart[i] + _prevStart[j] == _current) {
 					return true;
 				}
 			}

@@ -3,24 +3,28 @@
 
 namespace TwentyTwenty {
 
-	TEST_CASE("Day 10 Part 1 Example work", "[2020][Day10]") {
-	    const std::vector<std::string> input = {};
+	TEST_CASE("Day 10 Examples work", "[2020][Day10]") {
+	    const std::vector<std::string> input = {
+"16",
+"10",
+"15",
+"5",
+"1",
+"11",
+"7",
+"19",
+"6",
+"12",
+"4"
+		};
 
-	    Day10Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
+		const auto& parsed = Day10Puzzle::parse(input);
 
-	    auto answers = puzzle.fastSolve();
-	}
+		const auto& part1 = Day10Puzzle::doPart1(parsed);
+		const auto& part2 = Day10Puzzle::doPart2(parsed);
 
-	TEST_CASE("Day 10 Part 2 Example work", "[2020][Day10]") {
-	    const std::vector<std::string> input = {};
-
-	    Day10Puzzle puzzle{};
-	    puzzle.setVerbose(true);
-	    puzzle.setInputLines(input);
-
-	    auto answers = puzzle.fastSolve();
+		REQUIRE("35" == part1);
+		REQUIRE("8" == part2);
 	}
 
 }

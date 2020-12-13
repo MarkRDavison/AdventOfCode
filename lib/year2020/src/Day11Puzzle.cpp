@@ -6,7 +6,7 @@
 namespace TwentyTwenty {
 	
 	Day11Puzzle::Day11Puzzle() :
-		core::PuzzleBase("Untitled Puzzle", 2020, 11) {
+		core::PuzzleBase("Seating System", 2020, 11) {
 	}
 
 

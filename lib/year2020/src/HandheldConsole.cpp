@@ -43,9 +43,9 @@ namespace TwentyTwenty {
 	}
 
 	void HandheldConsole::runOperationAtProgramCounter() {
-		const auto& currentOperation = originalOperations[programCounter];
+		const auto& currentOperation = originalOperations[static_cast<unsigned>(programCounter)];
 
-		auto& fxn = functionMap[currentOperation.type];
+		const auto& fxn = functionMap[currentOperation.type];
 
 		fxn(currentOperation, programCounter, registers);
 	}
